@@ -12,15 +12,15 @@
 
     <div class="card">
 
-        <!-- Encabezado -->
+        @*Encabezado*@
         <div class="card-header text-center">
             <h3>Editar Libro</h3>
         </div>
 
-        <!-- Formulario -->
+        @*Formulario*@
         <div class="card-body">
 
-            <!-- LibroId -->
+            @*LibroId*@
             <div class="mb-3">
                 <label class="form-label">
                     LibroId
@@ -43,7 +43,7 @@
                        @bind="libro.Titulo" />
             </div>
 
-            <!-- Autor -->
+            @*Autor*@
             <div class="mb-3">
                 <label class="form-label">
                     Autor
@@ -54,7 +54,7 @@
                        @bind="libro.Autor" />
             </div>
 
-            <!-- Año de publicación -->
+            @*Año de publicación*@
             <div class="mb-3">
                 <label class="form-label">
                     AnoPublicacion
@@ -65,7 +65,7 @@
                        @bind="libro.AnoPublicacion" />
             </div>
 
-            <!-- Mensaje -->
+            @*Mensaje*@
             @if (!string.IsNullOrEmpty(mensaje))
             {
                 <div class="alert alert-danger">
@@ -75,30 +75,30 @@
 
         </div>
 
-        <!-- Botones -->
+        @*Botones*@
         <div class="card-footer">
 
             <div class="d-flex justify-content-center gap-2">
 
-                <!-- Volver -->
+                @*Volver*@
                 <button type="button"
                         class="btn btn-secondary"
                         @onclick="Volver">
-                    ← Volver
+                    ⏪ Volver
                 </button>
 
-                <!-- Modificar -->
+                @*Modificar*@
                 <button type="button"
                         class="btn btn-primary"
                         @onclick="Modificar">
                     💾 Modificar
                 </button>
 
-                <!-- Eliminar -->
+                @*Eliminar*@
                 <button type="button"
                         class="btn btn-danger"
                         @onclick="Eliminar">
-                    🗑 Eliminar
+                    🗑️ Eliminar
                 </button>
 
             </div>
