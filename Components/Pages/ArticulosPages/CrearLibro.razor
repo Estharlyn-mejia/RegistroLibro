@@ -1,0 +1,162 @@
+﻿@page "/crear-libro"
+
+@rendermode InteractiveServer
+
+@inject GestionLibro GestionLibro
+
+@inject NavigationManager Navigation
+
+<PageTitle>Crear Libro</PageTitle>
+
+<div class="container mt-4">
+
+    <div class="card">
+
+        <!-- Encabezado -->
+        <div class="card-header text-center">
+            <h3>Crear Libro</h3>
+        </div>
+
+        <!-- Formulario -->
+        <div class="card-body">
+
+            <!-- LibroId -->
+            <div class="mb-3">
+                <label class="form-label">
+                    LibroId
+                </label>
+
+                <input type="number"
+                       class="form-control"
+                       @bind="libroId" />
+            </div>
+
+            <!-- Titulo -->
+            <div class="mb-3">
+                <label class="form-label">
+                    Titulo
+                </label>
+
+                <input type="text"
+                       class="form-control"
+                       @bind="titulo" />
+            </div>
+
+            <!-- Autor -->
+            <div class="mb-3">
+                <label class="form-label">
+                    Autor
+                </label>
+
+                <input type="text"
+                       class="form-control"
+                       @bind="autor" />
+            </div>
+
+            <!-- Año de publicación -->
+            <div class="mb-3">
+                <label class="form-label">
+                    AnoPublicacion
+                </label>
+
+                <input type="number"
+                       class="form-control"
+                       @bind="anoPublicacion" />
+            </div>
+
+            <!-- Mensaje -->
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+
+        </div>
+
+        <!-- Botones -->
+        <div class="card-footer">
+
+            <div class="d-flex justify-content-center gap-2">
+
+                <!-- Volver -->
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    ← Volver
+                </button>
+
+                <!-- Guardar -->
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Guardar">
+                    💾 Guardar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@code
+{
+    private int libroId;
+
+    private string titulo = "";
+
+    private string autor = "";
+
+    private int anoPublicacion;
+
+    private string mensaje = "";
+
+    private async Task Guardar()
+    {
+        if (string.IsNullOrWhiteSpace(titulo))
+        {
+            mensaje = "El título es obligatorio.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(autor))
+        {
+            mensaje = "El autor es obligatorio.";
+            return;
+        }
+
+        if (anoPublicacion <= 0)
+        {
+            mensaje = "El año de publicación debe ser un número positivo.";
+            return;
+        }
+
+        RegistroLibro.Models.Libros libro =
+            new RegistroLibro.Models.Libros
+            {
+                LibroId = libroId,
+                Titulo = titulo,
+                Autor = autor,
+                AnoPublicacion = anoPublicacion
+            };
+
+        bool resultado =
+            await GestionLibro.Guardar(libro);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/libros");
+        }
+        else
+        {
+            mensaje = "Error al guardar el libro. Intente nuevamente.";
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/libros");
+    }
+}
