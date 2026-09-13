@@ -12,15 +12,15 @@
 
     <div class="card">
 
-        <!-- Encabezado -->
+        @*Encabezado*@
         <div class="card-header text-center">
             <h3>Crear Libro</h3>
         </div>
 
-        <!-- Formulario -->
+        @*Formulario*@
         <div class="card-body">
 
-            <!-- LibroId -->
+            @*LibroId*@
             <div class="mb-3">
                 <label class="form-label">
                     LibroId
@@ -31,7 +31,7 @@
                        @bind="libroId" />
             </div>
 
-            <!-- Titulo -->
+            @*Titulo*@
             <div class="mb-3">
                 <label class="form-label">
                     Titulo
@@ -42,7 +42,7 @@
                        @bind="titulo" />
             </div>
 
-            <!-- Autor -->
+            @*Autor*@
             <div class="mb-3">
                 <label class="form-label">
                     Autor
@@ -53,7 +53,7 @@
                        @bind="autor" />
             </div>
 
-            <!-- Año de publicación -->
+            @*Año de publicación*@
             <div class="mb-3">
                 <label class="form-label">
                     AnoPublicacion
@@ -64,7 +64,7 @@
                        @bind="anoPublicacion" />
             </div>
 
-            <!-- Mensaje -->
+            @*Mensaje*@
             @if (!string.IsNullOrEmpty(mensaje))
             {
                 <div class="alert alert-danger">
@@ -74,19 +74,19 @@
 
         </div>
 
-        <!-- Botones -->
+        @*Botones*@
         <div class="card-footer">
 
             <div class="d-flex justify-content-center gap-2">
 
-                <!-- Volver -->
+                @*Volver*@
                 <button type="button"
                         class="btn btn-secondary"
                         @onclick="Volver">
-                    ← Volver
+                    ⏪ Volver
                 </button>
 
-                <!-- Guardar -->
+                @*Guardar*@
                 <button type="button"
                         class="btn btn-primary"
                         @onclick="Guardar">
