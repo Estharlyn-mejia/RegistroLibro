@@ -3,6 +3,7 @@
 
 @inject EstudianteServices estudianteServices
 @inject NavigationManager Navigation
+@rendermode InteractiveServer
 
 <PageTitle>Editar Estudiante</PageTitle>
 
@@ -15,7 +16,7 @@
         </div>
 
         @*Formulario*@
-        <div class="card body">
+        <div class="card-body">
 
             @*EstudianteId*@
             <div class="mb-3">
@@ -49,6 +50,63 @@
                 <input type="text"
                         class="form-control"
                         @bind="estudiantes.Direccion" />
+            </div>
+
+            @*Email*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Email
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Emil" />
+            </div>
+
+            @*Fecha*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Fecha
+                </label>
+
+                <input type="date"
+                        class="form-control"
+                        @bind="estudiantes.Fecha" />
+            </div>
+
+            @*Mensaje*@
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+            <div class="d-flex justify-content-center gap-2">
+
+                @*Volver*@
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    ⏪ Volver
+                </button>
+
+                @*Modificar*@
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Modificar">
+                    💾 Modificar
+                </button>
+
+                @*Eliminar*@
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="Eliminar">
+                    🗑️ Eliminar
+                </button>
             </div>
         </div>
     </div>
@@ -103,7 +161,7 @@
 
         if (resultado)
         {
-            Navigation.NavigateTo("/estudiantes");
+            Navigation.NavigateTo("/ArticulosPages/Estudiantes");
         }
         else
         {
@@ -117,7 +175,7 @@
 
         if (resultado)
         {
-            Navigation.NavigateTo("/estudiantes");
+            Navigation.NavigateTo("/ArticulosPages/Estudiantes");
         }
         else
         {
@@ -125,6 +183,9 @@
         }
     }
 
-    private void Volver(){}
+    private void Volver()
+    {
+        Navigation.NavigateTo("/ArticulosPages/Estudiantes");
+    }
 
 }
