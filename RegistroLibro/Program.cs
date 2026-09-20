@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using RegistroLibro.Components;
 using RegistroLibro.DAL;
@@ -10,12 +11,13 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
+    var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+    builder.Services.AddDbContextFactory<Contexto>(op => op.UseSqlServer(ConStr));
 
 
-var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
-builder.Services.AddDbContextFactory<Contexto>(op => op.UseSqlServer(SqlConStr));
 
 builder.Services.AddScoped<GestionLibro>();
+//builder.Services.AddScoped<EstudiantesServices>();
 
 
 var app = builder.Build();

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aplicada1.Core" Version="1.0.0" />
+    <PackageReference Include="Aplicada1.Core" Version="1.1.0" />
     <PackageReference Include="Blazor.Bootstrap" Version="4.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
@@ -19,10 +19,6 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="RegistroLibro.csproj" />
   </ItemGroup>
 
 </Project>
