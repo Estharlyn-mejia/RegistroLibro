@@ -35,12 +35,24 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearEstudiantes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xDcmVhckVzdHVkaWFudGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearLibro.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xDcmVhckxpYnJvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Editar.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFZGl0YXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/EditarEstudiante.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFZGl0YXJFc3R1ZGlhbnRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Estudiantes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFc3R1ZGlhbnRlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Libros.razor]

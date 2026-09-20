@@ -1,0 +1,130 @@
+@page "/editor-estudiante/{EstudianteId:int}"
+@using Microsoft.IdentityModel.Tokens
+
+@inject EstudianteServices estudianteServices
+@inject NavigationManager Navigation
+
+<PageTitle>Editar Estudiante</PageTitle>
+
+<div class="container mt-4">
+    <div class="card">
+
+        @*Encabezado*@
+        <div class="card-header text-center">
+            <h3>Editar Estudiante</h3>
+        </div>
+
+        @*Formulario*@
+        <div class="card body">
+
+            @*EstudianteId*@
+            <div class="mb-3">
+                <label class="form-label">
+                    EstudianteId
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.EstudianteId"
+                        disabled />
+            </div>
+
+            @*Nombre*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Nombre
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Nombre" />
+            </div>
+
+            @*Direccion*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Direccion
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Direccion" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter]
+    public int EstudianteId{get; set;}
+
+    private RegistroLibro.Models.Estudiantes estudiantes = new RegistroLibro.Models.Estudiantes();
+
+    private string mensaje = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        RegistroLibro.Models.Estudiantes? resultado = await estudianteServices.Buscar(EstudianteId);
+
+        if(resultado != null)
+        {
+            estudiantes = resultado;
+        }
+        else
+        {
+            mensaje = "No encontrado";
+        }
+    }
+
+    private async Task Modificar()
+    {
+        if(string.IsNullOrWhiteSpace(estudiantes.Nombre))
+        {
+            mensaje = "El nombre es obligatorio";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(estudiantes.Direccion))
+        {
+            mensaje = "La Direccion es obligatoria";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(estudiantes.Emil))
+        {
+            mensaje = "El Email es obligatorio";
+            return;
+        }
+        if(estudiantes.Fecha > DateTime.Now)
+        {
+            mensaje = "La fecha no puede ser mayor a la actual";
+            return;
+        }
+
+        bool resultado = await estudianteServices.Modificar(estudiantes);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/estudiantes");
+        }
+        else
+        {
+            mensaje = "Error al modificar el estudiante";
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        bool resultado = await estudianteServices.Eliminar(EstudianteId);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/estudiantes");
+        }
+        else
+        {
+            mensaje = "Error al eliminar el estudiante";
+        }
+    }
+
+    private void Volver(){}
+
+}

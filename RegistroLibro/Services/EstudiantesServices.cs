@@ -28,7 +28,7 @@ public class EstudianteServices(IDbContextFactory<Contexto> DbFactory)
     public async Task<Estudiantes?> Buscar(int estudianteId)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
-        return await contexto.Estudiantes.Include(l => l.EstudianteId).Include(l => l.Nombre).FirstOrDefaultAsync(l => l.EstudianteId == estudianteId);
+        return await contexto.Estudiantes.FirstOrDefaultAsync(l => l.EstudianteId == estudianteId);
     }
 
     public async Task<bool> Eliminar(int estudianteId)

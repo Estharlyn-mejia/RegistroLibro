@@ -1,7 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using RegistroLibro.Components;
-using RegistroLibro.DAL;
+using RegistroLibro.Context;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +17,7 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddScoped<GestionLibro>();
-//builder.Services.AddScoped<EstudiantesServices>();
+builder.Services.AddScoped<EstudianteServices>();
 
 
 var app = builder.Build();

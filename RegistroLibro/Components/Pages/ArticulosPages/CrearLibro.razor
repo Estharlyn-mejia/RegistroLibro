@@ -1,96 +1,105 @@
-﻿@page "/crear-libro"
+﻿```razor
+@page "/crear-libro"
+
+@using RegistroLibro.Models
 
 @rendermode InteractiveServer
 
 @inject GestionLibro GestionLibro
-
 @inject NavigationManager Navigation
 
 <PageTitle>Crear Libro</PageTitle>
 
-<div class="container mt-4">
+<EditForm Model="@libro" OnValidSubmit="@Guardar">
+    <DataAnnotationsValidator />
 
-    <div class="card">
+    <div class="container mt-4">
 
-        @*Encabezado*@
-        <div class="card-header text-center">
-            <h3>Crear Libro</h3>
-        </div>
+        <div class="card shadow-lg">
 
-        @*Formulario*@
-        <div class="card-body">
-
-            @*LibroId*@
-            <div class="mb-3">
-                <label class="form-label">
-                    LibroId
-                </label>
-
-                <input type="number"
-                       class="form-control"
-                       @bind="libroId" />
+            @*Encabezado*@
+            <div class="card-header text-center">
+                <h3>
+                    <strong>Crear un nuevo libro</strong>
+                </h3>
             </div>
 
-            @*Titulo*@
-            <div class="mb-3">
-                <label class="form-label">
-                    Titulo
-                </label>
+            @*Formulario*@
+            <div class="card-body">
 
-                <input type="text"
-                       class="form-control"
-                       @bind="titulo" />
-            </div>
+                <div class="row">
 
-            @*Autor*@
-            <div class="mb-3">
-                <label class="form-label">
-                    Autor
-                </label>
+                    @*LibroId*@
+                    <div class="col-2">
+                        <label class="form-label" for="LibroId">
+                            <strong>LibroId</strong>
+                        </label>
 
-                <input type="text"
-                       class="form-control"
-                       @bind="autor" />
-            </div>
+                        <InputNumber class="form-control"
+                                    id="LibroId"
+                                    @bind-Value="libro.LibroId"
+                                    readonly>
+                        </InputNumber>
+                    </div>
 
-            @*Año de publicación*@
-            <div class="mb-3">
-                <label class="form-label">
-                    AnoPublicacion
-                </label>
+                    @* Titulo *@
+                    <div class="col-5">
+                        <label class="form-label" for="Titulo">
+                            <strong>Título</strong>
+                        </label>
 
-                <input type="number"
-                       class="form-control"
-                       @bind="anoPublicacion" />
-            </div>
+                        <InputText class="form-control"
+                                    id="Titulo"
+                                    @bind-Value="libro.Titulo">
+                        </InputText>
 
-            @*Mensaje*@
-            @if (!string.IsNullOrEmpty(mensaje))
-            {
-                <div class="alert alert-danger">
-                    @mensaje
+                        <ValidationMessage For="(() => libro.Titulo)" />
+                    </div>
+
+                    @* Autor *@
+                    <div class="col-5">
+                        <label class="form-label" for="Autor">
+                            <strong>Autor</strong>
+                        </label>
+
+                        <InputText class="form-control"
+                                    id="Autor"
+                                    @bind-Value="libro.Autor">
+                        </InputText>
+
+                        <ValidationMessage For="(() => libro.Autor)" />
+                    </div>
+
+                    @*Año de publicación*@
+                    <div class="col-4 mt-3">
+                        <label class="form-label" for="AnoPublicacion">
+                            <strong>Año de publicación</strong>
+                        </label>
+
+                        <InputNumber class="form-control"
+                                    id="AnoPublicacion"
+                                    @bind-Value="libro.AnoPublicacion">
+                        </InputNumber>
+
+                        <ValidationMessage For="(() => libro.AnoPublicacion)" />
+                    </div>
+
                 </div>
-            }
 
-        </div>
+            </div>
 
-        @*Botones*@
-        <div class="card-footer">
+            @*Botones*@
+            <div class="card-footer text-center">
 
-            <div class="d-flex justify-content-center gap-2">
-
-                @*Volver*@
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-outline-primary"
                         @onclick="Volver">
-                    ⏪ Volver
+                    ⬅️ Volver
                 </button>
 
-                @*Guardar*@
-                <button type="button"
-                        class="btn btn-primary"
-                        @onclick="Guardar">
-                    💾 Guardar
+                <button type="submit"
+                        class="btn btn-outline-success">
+                    💾 Crear
                 </button>
 
             </div>
@@ -99,59 +108,19 @@
 
     </div>
 
-</div>
+</EditForm>
 
 @code
 {
-    private int libroId;
-
-    private string titulo = "";
-
-    private string autor = "";
-
-    private int anoPublicacion;
-
-    private string mensaje = "";
+    private RegistroLibro.Models.Libros libro = new RegistroLibro.Models.Libros();
 
     private async Task Guardar()
     {
-        if (string.IsNullOrWhiteSpace(titulo))
-        {
-            mensaje = "El título es obligatorio.";
-            return;
-        }
+        var crear = await GestionLibro.Guardar(libro);
 
-        if (string.IsNullOrWhiteSpace(autor))
+        if (crear)
         {
-            mensaje = "El autor es obligatorio.";
-            return;
-        }
-
-        if (anoPublicacion <= 0)
-        {
-            mensaje = "El año de publicación debe ser un número positivo.";
-            return;
-        }
-
-        RegistroLibro.Models.Libros libro =
-            new RegistroLibro.Models.Libros
-            {
-                LibroId = libroId,
-                Titulo = titulo,
-                Autor = autor,
-                AnoPublicacion = anoPublicacion
-            };
-
-        bool resultado =
-            await GestionLibro.Guardar(libro);
-
-        if (resultado)
-        {
-            Navigation.NavigateTo("/libros");
-        }
-        else
-        {
-            mensaje = "Error al guardar el libro. Intente nuevamente.";
+            Volver();
         }
     }
 
@@ -160,3 +129,4 @@
         Navigation.NavigateTo("/libros");
     }
 }
+```
