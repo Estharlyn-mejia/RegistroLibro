@@ -1,0 +1,293 @@
+﻿@page "/libros"
+@rendermode InteractiveServer
+
+@inject GestionLibro GestionLibro
+@inject NavigationManager Navigation
+
+<PageTitle>Biblioteca</PageTitle>
+
+<div class="container">
+
+    @*Header*@
+    <div class="card-header">
+        <div class="card-title">
+            <h3>Consulta de Libros</h3>
+        </div>
+    </div>
+
+    @* Body *@
+    <div class="card-body">
+
+        @*Labels*@
+        <div class="row">
+
+            <div class="col-3">
+                <label class="form-label" for="Filtro">
+                    <strong>Filtrar por</strong>
+                </label>
+            </div>
+
+            <div class="col-4">
+                <label class="form-label" for="valorFiltro">
+                    <strong>Búsqueda</strong>
+                </label>
+            </div>
+
+        </div>
+
+        @*Inputs y botones*@
+        <div class="row">
+
+            @* Filtro *@
+            <div class="col-3">
+
+                <select class="form-select" @bind="filtro">
+
+                    <option value="">
+                        Elija una opción
+                    </option>
+
+                    <option value="Id">
+                        Id
+                    </option>
+
+                    <option value="Titulo">
+                        Título
+                    </option>
+
+                    <option value="Autor">
+                        Autor
+                    </option>
+
+                    <option value="AnoPublicacion">
+                        Año de Publicación
+                    </option>
+
+                </select>
+
+            </div>
+
+            @* Búsqueda *@
+            <div class="col-4">
+
+                <div class="input-group">
+
+                    <input class="form-control"
+                           @bind="valorFiltro"
+                           placeholder="Buscar" />
+
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            @onclick="Buscar">
+
+                        Buscar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            @*Restablecer*@
+            <div class="col-auto">
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        @onclick="Restablecer">
+
+                    Restablecer
+
+                </button>
+
+            </div>
+
+        </div>
+
+        @* Tabla *@
+        <table class="table table-bordered mt-3 text-center">
+
+            <thead>
+
+                <tr>
+                    <th>LibroId</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Año de Publicación</th>
+                    <th>Acciones</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var libro in ListaLibros)
+                {
+                    <tr>
+
+                        <td>
+                            @libro.LibroId
+                        </td>
+
+                        <td>
+                            @libro.Titulo
+                        </td>
+
+                        <td>
+                            @libro.Autor
+                        </td>
+
+                        <td>
+                            @libro.AnoPublicacion
+                        </td>
+
+                        <td>
+
+                            <button type="button"
+                                    class="btn btn-outline-warning"
+                                    @onclick="() => MostrarPantallaEditar(libro.LibroId)">
+
+                                Editar
+
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-outline-danger"
+                                    @onclick="() => MostrarPantallaEliminar(libro.LibroId)">
+
+                                Eliminar
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+        <p>
+            <strong>Cantidad:</strong> @ListaLibros.Count
+        </p>
+
+    </div>
+
+</div>
+
+@*Crear libro*@
+<div class="container mt-3">
+
+    <button type="button"
+            class="btn btn-primary"
+            @onclick="MostrarPantallaCrear">
+
+        Crear Libro
+
+    </button>
+
+</div>
+
+
+@code
+{
+    public List<RegistroLibro.Models.Libros> ListaLibros { get; set; } = [];
+
+    public string? filtro { get; set; }
+
+    public string? valorFiltro { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaLibros = await GestionLibro.ObtenerTodos();
+    }
+
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "Id" &&
+                int.TryParse(valorFiltro, out int libroId))
+            {
+                var libro = await GestionLibro.Buscar(libroId);
+
+                if (libro != null)
+                {
+                    ListaLibros = [libro];
+                }
+                else
+                {
+                    ListaLibros = [];
+                }
+            }
+
+            else if (filtro == "Titulo")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.Titulo.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+
+            else if (filtro == "Autor")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.Autor.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+
+            else if (filtro == "AnoPublicacion")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.AnoPublicacion.ToString()
+                    .Contains(valorFiltro))
+                    .ToList();
+            }
+
+            else
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l =>
+                        l.Titulo.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.Autor.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.AnoPublicacion.ToString().Contains(valorFiltro))
+                    .ToList();
+            }
+        }
+        else
+        {
+            ListaLibros = await GestionLibro.ObtenerTodos();
+        }
+    }
+
+
+    private async Task Restablecer()
+    {
+        ListaLibros = await GestionLibro.ObtenerTodos();
+
+        filtro = string.Empty;
+
+        valorFiltro = string.Empty;
+    }
+
+
+    public void MostrarPantallaCrear()
+    {
+        Navigation.NavigateTo("/crear-libro");
+    }
+
+
+    public void MostrarPantallaEditar(int id)
+    {
+        Navigation.NavigateTo($"/editar-libro/{id}");
+    }
+
+
+    public void MostrarPantallaEliminar(int id)
+    {
+        Navigation.NavigateTo($"/editar-libro/{id}");
+    }
+}
