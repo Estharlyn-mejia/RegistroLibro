@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/RegistroLIbro.Tests/">
+    <Project Path="RegistroLIbro.Tests/RegistroLibro.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/" />
+  <Project Path="RegistroLibro/RegistroLibro.csproj" />
+</Solution>
