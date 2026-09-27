@@ -18,6 +18,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<GestionLibro>();
 builder.Services.AddScoped<EstudianteServices>();
+builder.Services.AddScoped<PrestamosServices>();
 
 
 var app = builder.Build();

@@ -6,16 +6,17 @@
 
 <PageTitle>Biblioteca</PageTitle>
 
-<div class="container">
+<div class="container mt-4">
+    <div class="card">
 
     @*Header*@
     <div class="card-header">
-        <div class="card-title">
+        <div class="card-header text-center">
             <h3>Consulta de Libros</h3>
         </div>
     </div>
 
-    @* Body *@
+    @*Formulario*@
     <div class="card-body">
 
         @*Labels*@
@@ -73,8 +74,8 @@
                 <div class="input-group">
 
                     <input class="form-control"
-                           @bind="valorFiltro"
-                           placeholder="Buscar" />
+                            @bind="valorFiltro"
+                            placeholder="Buscar" />
 
                     <button type="button"
                             class="btn btn-outline-primary"
@@ -171,6 +172,7 @@
             <strong>Cantidad:</strong> @ListaLibros.Count
         </p>
 
+    </div>
     </div>
 
 </div>
