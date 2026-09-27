@@ -1,0 +1,97 @@
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\favicon.png
+wwwroot\app.css
+Components\Layout\ReconnectModal.razor.js
+C:\Users\mejia\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.12\build\..\_framework\blazor.web.js
+C:\Users\mejia\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.12\build\..\_framework\blazor.server.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\app.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Layout\ReconnectModal.razor.js
+C:\Users\mejia\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.12\_framework\blazor.web.js
+C:\Users\mejia\.nuget\packages\microsoft.aspnetcore.app.internal.assets\10.0.12\_framework\blazor.server.js
