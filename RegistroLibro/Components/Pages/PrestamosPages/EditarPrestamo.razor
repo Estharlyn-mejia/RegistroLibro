@@ -1,0 +1,286 @@
+@page "/Prestamo/Editar/{PrestamoId:int}"
+
+@inject NavigationManager Navigation
+@inject PrestamosServices prestamosServices
+@inject EstudianteServices estudianteServices
+@inject GestionLibro gestionLibro
+
+@rendermode InteractiveServer
+
+<PageTitle>Editar Prestamo</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+
+        @*Header*@
+        <div class="card-header text-center">
+            <h3>
+                <strong>Editar Prestamo</strong>
+            </h3>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+
+            @*PrestamoId*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>PrestamoId</strong>
+                </label>
+                <input type="text"
+                        class="form-control"
+                        @bind="prestamo.PrestamoId"
+                        disabled />
+            </div>
+
+            @*Estudiante*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Estudiante</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.EstudianteId">
+                        <option value="0">
+                            Elija una opcion
+                        </option>
+                    @foreach (var estudiante in listaEstudiante)
+                    {
+                        <option value="@estudiante.EstudianteId">
+                            @estudiante.Nombre
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            @*Libro*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Libro</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.LibroId">
+                    <option value="0">
+                        Elija una opcion
+                    </option>
+                    @foreach (var libro in listaLibros)
+                    {
+                        <option value="@libro.LibroId">
+                            @libro.Titulo
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            @*Fecha de prestamo*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Fecha de prestamo</strong>
+                </label>
+                <InputDate class="form-control"
+                            @bind-Value="prestamo.FechaPrestamo" />
+            </div>
+
+            @*Fecha de devolucion*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Fecha de devolucion</strong>
+                </label>
+                <InputDate class="form-control"
+                            @bind-Value="prestamo.FechaDevolucion" />
+            </div>
+
+            @*Estado*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Estado</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.Estado">
+
+                    <option value="">
+                        Elija una opcion
+                    </option>
+
+                    <option value="Prestado">
+                        Prestado
+                    </option>
+
+                    <option value="Devuelto">
+                        Devuelto
+                    </option>
+
+                </InputSelect>
+            </div>
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+            <div class="d-flex justify-content-center gap-2">
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    <span class="bi bi-arrow-left"></span>
+                    Volver
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Modificar">
+                    <span class="bi bi-floppy"></span>
+                    Modificar
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="MostrarConfirmacion">
+                    <span class="bi bi-trash"></span>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal de confirmacion*@
+@if (mostrarConfirmacion)
+{
+    <div class="modal fade show d-block"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title">
+                        Confirmar Eliminar
+                    </h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p>
+                        ¿Seguro de que desea eliminarlo?
+                    </p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="CancelarEliminar">
+                        Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="ConfirmarEliminar">
+                        Si, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code
+{
+    [Parameter]
+    public int PrestamoId { get; set; }
+
+
+    private Prestamo prestamo = new Prestamo();
+
+    private List<Estudiantes> listaEstudiante = new List<Estudiantes>();
+
+    private List<Libros> listaLibros = new List<Libros>();
+
+    private string mensaje = "";
+
+    private bool mostrarConfirmacion = false;
+    protected override async Task OnInitializedAsync()
+    {
+        Prestamo? resultado =
+            await prestamosServices.Buscar(PrestamoId);
+
+        if (resultado != null)
+        {
+            prestamo = resultado;
+        }
+        else
+        {
+            mensaje = "El prestamo no existe.";
+        }
+        listaEstudiante =
+            await estudianteServices.GetList(e => e.EstudianteId > 0);
+        listaLibros = await gestionLibro.ObtenerTodos();
+    }
+
+    private async Task Modificar()
+    {
+        mensaje = "";
+
+        if (prestamo.EstudianteId <= 0)
+        {
+            mensaje = "El estudiante es obligatorio";
+            return;
+        }
+        if (prestamo.LibroId <= 0)
+        {
+            mensaje = "El libro es obligatorio";
+            return;
+        }
+        if (prestamo.FechaPrestamo > DateTime.Now)
+        {
+            mensaje = "La fecha de prestamo no puede ser mayor a la fecha actual";
+            return;
+        }
+
+        if (prestamo.FechaDevolucion.HasValue &&
+            prestamo.FechaDevolucion.Value < prestamo.FechaPrestamo)
+        {
+            mensaje = "La fecha de devolucion no puede ser menor que la fecha de prestamo";
+
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(prestamo.Estado))
+        {
+            mensaje = "Debe seleccionar un estado";
+            return;
+        }
+        bool resultado = await prestamosServices.Modificar(prestamo);
+        if (resultado)
+        {
+            Navigation.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            mensaje ="No se pudo modificar el prestamo";
+        }
+    }
+    private void MostrarConfirmacion()
+    {
+        mostrarConfirmacion = true;
+    }
+
+    private void CancelarEliminar()
+    {
+        mostrarConfirmacion = false;
+    }
+    private async Task ConfirmarEliminar()
+    {
+        mostrarConfirmacion = false;
+        bool resultado = await prestamosServices.Eliminar(PrestamoId);
+        if (resultado)
+        {
+            Navigation.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            mensaje =
+                "No se pudo eliminar el prestamo";
+        }
+    }
+    private void Volver()
+    {
+        Navigation.NavigateTo("/Prestamo/Index");
+    }
+}

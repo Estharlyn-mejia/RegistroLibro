@@ -6,12 +6,6 @@ using RegistroLibro.Models;
 
 public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
     
-    private async Task<bool> Existe(int prestamoId)
-    {
-        await using var Contexto = await contextFactory.CreateDbContextAsync();
-        return await Contexto.Prestamos.AnyAsync(l => l.PrestamoId == prestamoId);
-    }
-
     public async Task<bool> Guardar(Prestamo prestamo)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
@@ -19,20 +13,31 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
         return await Contexto.SaveChangesAsync() > 0;
     }
 
-    private async Task<bool> Modificar(Prestamo prestamo)
+
+    public async Task<Prestamo?> Buscar(int prestamoId)
+    {
+        await using var Contexto = await contextFactory.CreateDbContextAsync();
+        return await Contexto.Prestamos
+            .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
+    }
+    private async Task<bool> Existe(int prestamoId)
+    {
+        await using var Contexto = await contextFactory.CreateDbContextAsync();
+        return await Contexto.Prestamos.AnyAsync(l => l.PrestamoId == prestamoId);
+    }
+
+    
+
+    public async Task<bool> Modificar(Prestamo prestamo)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
         Contexto.Prestamos.Update(prestamo);
         return await Contexto.SaveChangesAsync() >0 ;
     }
 
-    private async Task<Prestamo?> Buscar(int prestamoId)
-    {
-        await using var Contexto = await contextFactory.CreateDbContextAsync();
-        return await Contexto.Prestamos.FirstOrDefaultAsync(l => l.PrestamoId == prestamoId);
-    }
+    
 
-    private async Task<bool> Eliminar(int prestamoId)
+    public async Task<bool> Eliminar(int prestamoId)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
         return await Contexto.Prestamos.AsNoTracking().Where(l => l.PrestamoId == prestamoId).ExecuteDeleteAsync() > 0;
@@ -61,7 +66,7 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
 
 
 
-    private async Task<List<Prestamo>> ObtenerTodos()
+    public async Task<List<Prestamo>> ObtenerTodos()
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
         return await Contexto.Prestamos.AsNoTracking().ToListAsync();

@@ -1,3 +1,290 @@
+@page "/Prestamo/Index"
+
+@inject PrestamosServices prestamosServices
+@inject EstudianteServices estudianteServices
+@inject GestionLibro gestionLibro
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Registro de Prestamo</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-lg">
+
+        @*Header*@
+        <div class="card-header">
+            <div class="text-center">
+                <h3>
+                    <strong>Consulta de Prestamo</strong>
+                </h3>
+            </div>
+            
+            @*Titulos*@
+            <div class="row">
+                <div class="col-3">
+                    <label class="form-label" for="Filtro">
+                        <strong>Filtrar por</strong>
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="valorFiltro">
+                        <strong>Busqueda</strong>
+                    </label>
+                </div>
+            </div>
+
+            @*Filtros*@
+            <div class="row g-3">
+                @*Filtro*@
+                <div class="col-3">
+                    <select class="form-select" @bind="Filtro">
+
+                        <option value="">
+                            Elija una opcion
+                        </option>
+
+                        <option value="Estudiante">
+                            Estudiante
+                        </option>
+
+                        <option value="Libro">
+                            Libro
+                        </option>
+
+                    </select>
+                </div>
+                @*Busqueda*@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control"
+                                @bind="ValorFiltro"
+                                placeholder="Buscar" />
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                @onclick="Buscar">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+                @*Restablecer*@
+                <div class="col-auto">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            @onclick="Restablecer">
+                        Restablecer
+                    </button>
+                </div>
+            </div>
+            @*Tabla*@
+            <table class="table table-bordered mt-3 text-center">
+                <thead>
+                    <tr>
+                        <th>PrestamoId</th>
+                        <th>Estudiante</th>
+                        <th>Libro</th>
+                        <th>Fecha prestamo</th>
+                        <th>Fecha devolucion</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var prestamo in ListaPrestamos)
+                    {
+                        <tr>
+                            <td>
+                                @prestamo.PrestamoId
+                            </td>
+                            @* Estudiante *@
+                            <td>
+                                @{
+                                    var estudiante = ListaEstudiantes
+                                        .FirstOrDefault(e =>
+                                            e.EstudianteId == prestamo.EstudianteId);
+                                }
+                                @if (estudiante != null)
+                                {
+                                    @estudiante.Nombre
+                                }
+                                else
+                                {
+                                    <span>No encontrado</span>
+                                }
+                            </td>
+
+                            @*Libro*@
+                            <td>
+                                @{
+                                    var libro = ListaLibros
+                                        .FirstOrDefault(l =>
+                                            l.LibroId == prestamo.LibroId);
+                                }
+                                @if (libro != null)
+                                {
+                                    @libro.Titulo
+                                }
+                                else
+                                {
+                                    <span>No encontrado</span>
+                                }
+                            </td>
+
+                            @*Fecha prestamo*@
+                            <td>
+                                @prestamo.FechaPrestamo.ToShortDateString()
+                            </td>
+
+                            @*Fecha devolucion*@
+                            <td>
+                                @if (prestamo.FechaDevolucion.HasValue)
+                                {
+                                    @prestamo.FechaDevolucion.Value.ToShortDateString()
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            @* Estado *@
+                            <td>
+                                @prestamo.Estado
+                            </td>
+                            @*Acciones*@
+                            <td>
+                                <button type="button"
+                                        class="btn btn-outline-warning"
+                                        @onclick="() => MostrarPantallaEditar(prestamo.PrestamoId)">
+                                    Editar
+                                </button>
+                                <button type="button"
+                                        class="btn btn-outline-danger"
+                                        @onclick="() => MostrarPantallaEliminar(prestamo.PrestamoId)">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @*Cantidad*@
+            <p>
+                <strong>Cantidad:</strong>@ListaPrestamos.Count
+            </p>
+        </div>
+    </div>
+    @*Crear*@
+    <div class="container mt-3">
+
+        <button type="button"
+                class="btn btn-primary"
+                @onclick="MostrarPantallaCrear">
+            Crear Prestamo
+        </button>
+    </div>
+</div>
 
 
+@code
+{
+    public List<Prestamo> ListaPrestamos { get; set; } =
+        new List<Prestamo>();
 
+    public List<Estudiantes> ListaEstudiantes { get; set; } =
+        new List<Estudiantes>();
+
+    public List<Libros> ListaLibros { get; set; } =
+        new List<Libros>();
+
+    public string Filtro { get; set; } = string.Empty;
+
+    public string ValorFiltro { get; set; } = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrestamos =
+            await prestamosServices.GetList(p => p.PrestamoId > 0);
+
+        ListaEstudiantes =
+            await estudianteServices.GetList(e => e.EstudianteId > 0);
+
+        ListaLibros =
+            await gestionLibro.ObtenerTodos();
+    }
+
+
+    private async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == "Estudiante")
+            {
+                var estudiantesEncontrados = ListaEstudiantes
+                    .Where(e => e.Nombre.Contains(
+                        ValorFiltro,
+                        StringComparison.OrdinalIgnoreCase))
+                    .Select(e => e.EstudianteId)
+                    .ToList();
+
+                ListaPrestamos = (await prestamosServices.ObtenerTodos())
+                    .Where(p => estudiantesEncontrados.Contains(p.EstudianteId))
+                    .ToList();
+            }
+
+            else if (Filtro == "Libro")
+            {
+                var librosEncontrados = ListaLibros
+                    .Where(l => l.Titulo.Contains(
+                        ValorFiltro,
+                        StringComparison.OrdinalIgnoreCase))
+                    .Select(l => l.LibroId)
+                    .ToList();
+
+                ListaPrestamos = (await prestamosServices.ObtenerTodos())
+                    .Where(p => librosEncontrados.Contains(p.LibroId))
+                    .ToList();
+            }
+
+            else
+            {
+                ListaPrestamos =
+                    await prestamosServices.ObtenerTodos();
+            }
+        }
+        else
+        {
+            ListaPrestamos =
+                await prestamosServices.ObtenerTodos();
+        }
+    }
+
+
+    private async Task Restablecer()
+    {
+        ListaPrestamos =
+            await prestamosServices.ObtenerTodos();
+
+        Filtro = string.Empty;
+
+        ValorFiltro = string.Empty;
+    }
+
+
+    private void MostrarPantallaCrear()
+    {
+        Navigation.NavigateTo("/Prestamo/Crear");
+    }
+
+
+    private void MostrarPantallaEditar(int id)
+    {
+        Navigation.NavigateTo($"/Prestamo/Editar/{id}");
+    }
+
+
+    private void MostrarPantallaEliminar(int id)
+    {
+        Navigation.NavigateTo($"/Prestamo/Editar/{id}");
+    }
+}

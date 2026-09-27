@@ -16,7 +16,7 @@ public partial class Prestamo
     [Required(ErrorMessage = "Este campo es obligatorio")]
     public DateTime FechaPrestamo { get; set;}
 
-    [Required(ErrorMessage = "Este campo es obligatorio")]
+    
     public DateTime? FechaDevolucion { get; set;}
 
     [Required(ErrorMessage = "Este campo es obligatorio")]
