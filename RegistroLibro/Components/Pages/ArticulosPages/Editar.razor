@@ -1,8 +1,6 @@
 ﻿@page "/editar-libro/{LibroId:int}"
 @rendermode InteractiveServer
 
-@using RegistroLibro.Models
-
 @inject GestionLibro GestionLibro
 @inject NavigationManager Navigation
 
@@ -97,7 +95,7 @@
                 @*Eliminar*@
                 <button type="button"
                         class="btn btn-danger"
-                        @onclick="Eliminar">
+                        @onclick="MostrarConfirmacion">
                     🗑️ Eliminar
                 </button>
 
@@ -109,15 +107,48 @@
 
 </div>
 
+@if (mostrarConfirmacion)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title">Confirmar Eliminacion</h5>
+                </div>
+            
+            <div class="modal-body text-center">
+                <p>¿Seguro de que desea eliminarlo?</p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="CancelarEliminar">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="ConfirmarEliminar">
+                    Si, Eliminar
+                </button>
+            </div>
+
+            </div>
+        </div>
+    </div>
+}
+
 @code
 {
     [Parameter]
     public int LibroId { get; set; }
 
-    private RegistroLibro.Models.Libros libro =
-        new RegistroLibro.Models.Libros();
+    private RegistroLibro.Models.Libros libro = new RegistroLibro.Models.Libros();
 
     private string mensaje = "";
+
+    private bool mostrarConfirmacion = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,10 +198,20 @@
         }
     }
 
-    private async Task Eliminar()
+    private void MostrarConfirmacion()
     {
-        bool resultado =
-            await GestionLibro.Eliminar(LibroId);
+        mostrarConfirmacion = true;
+    }
+
+    private void CancelarEliminar()
+    {
+        mostrarConfirmacion = false;
+    }
+    private async Task ConfirmarEliminar()
+    {
+        mostrarConfirmacion = false;
+
+        bool resultado = await GestionLibro.Eliminar(LibroId);
 
         if (resultado)
         {

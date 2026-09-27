@@ -1,6 +1,7 @@
 using RegistroLibro.Models;
 using RegistroLibro.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 
 public class EstudianteServices(IDbContextFactory<Contexto> DbFactory)
@@ -35,6 +36,16 @@ public class EstudianteServices(IDbContextFactory<Contexto> DbFactory)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Estudiantes.AsNoTracking().Where(p => p.EstudianteId == estudianteId).ExecuteDeleteAsync() > 0;
+    }
+
+    public async Task<List<Estudiantes>> GetList(Expression<Func<Estudiantes, bool>> criterio)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+    
+        return await contexto.Estudiantes
+            .Where(criterio)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<List<Estudiantes>> ObtenerTodo()
