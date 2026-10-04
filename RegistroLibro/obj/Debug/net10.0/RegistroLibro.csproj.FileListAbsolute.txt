@@ -1,5 +1,6 @@
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\appsettings.Development.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\appsettings.json
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\dotnet-tools.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.staticwebassets.runtime.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.staticwebassets.endpoints.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.exe
@@ -7,6 +8,7 @@ C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\Regist
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.runtimeconfig.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\RegistroLibro.pdb
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\Aplicada1.Core.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\Azure.Core.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\Azure.Identity.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\BlazorBootstrap.dll
@@ -228,4 +230,3 @@ C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Debug\net10.0\refint
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Debug\net10.0\RegistroLibro.pdb
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Debug\net10.0\RegistroLibro.genruntimeconfig.cache
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Debug\net10.0\ref\RegistroLibro.dll
-C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Debug\net10.0\Aplicada1.Core.dll

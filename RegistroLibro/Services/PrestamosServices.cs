@@ -2,8 +2,6 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using RegistroLibro.Context;
 using RegistroLibro.Models;
-
-
 public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
     
     public async Task<bool> Guardar(Prestamo prestamo)
@@ -13,20 +11,18 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
         return await Contexto.SaveChangesAsync() > 0;
     }
 
-
     public async Task<Prestamo?> Buscar(int prestamoId)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
         return await Contexto.Prestamos
             .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
     }
+
     private async Task<bool> Existe(int prestamoId)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
         return await Contexto.Prestamos.AnyAsync(l => l.PrestamoId == prestamoId);
     }
-
-    
 
     public async Task<bool> Modificar(Prestamo prestamo)
     {
@@ -44,14 +40,14 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
     }
 
     public async Task<List<Prestamo>> GetList(Expression<Func<Prestamo, bool>> criterio)
-{
-    await using var contexto = await contextFactory.CreateDbContextAsync();
-
-    return await contexto.Prestamos
-        .Where(criterio)
-        .AsNoTracking()
-        .ToListAsync();
-}
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+    
+        return await contexto.Prestamos
+            .Where(criterio)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
     public async Task<List<Prestamo>> GetPrestamosPendientes(int estudianteId)
     {
@@ -63,8 +59,6 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
             .AsNoTracking()
             .ToListAsync();
     }
-
-
 
     public async Task<List<Prestamo>> ObtenerTodos()
     {
