@@ -1,20 +1,13 @@
 ﻿```razor
 @page "/crear-libro"
-
 @rendermode InteractiveServer
-
 @inject GestionLibro GestionLibro
 @inject NavigationManager Navigation
-
 <PageTitle>Crear Libro</PageTitle>
-
 <EditForm Model="@libro" OnValidSubmit="@Guardar">
     <DataAnnotationsValidator />
-
     <div class="container mt-4">
-
         <div class="card shadow-lg">
-
             @*Encabezado*@
             <div class="card-header text-center">
                 <h3>
@@ -24,7 +17,6 @@
 
             @*Formulario*@
             <div class="card-body">
-
                 <div class="row">
 
                     @*LibroId*@
@@ -81,9 +73,7 @@
 
                         <ValidationMessage For="(() => libro.AnoPublicacion)" />
                     </div>
-
                 </div>
-
             </div>
 
             @*Botones*@
@@ -99,32 +89,25 @@
                         class="btn btn-outline-success">
                     💾 Crear
                 </button>
-
             </div>
-
         </div>
-
     </div>
-
 </EditForm>
 
 @code
 {
     private RegistroLibro.Models.Libros libro = new RegistroLibro.Models.Libros();
-
     private async Task Guardar()
     {
         var crear = await GestionLibro.Guardar(libro);
-
         if (crear)
         {
             Volver();
         }
     }
-
     private void Volver()
     {
         Navigation.NavigateTo("/libros");
     }
 }
-```
+
