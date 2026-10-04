@@ -31,8 +31,6 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
         return await Contexto.SaveChangesAsync() >0 ;
     }
 
-    
-
     public async Task<bool> Eliminar(int prestamoId)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
