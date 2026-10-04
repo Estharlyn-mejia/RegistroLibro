@@ -2,8 +2,6 @@ using RegistroLibro.Models;
 using RegistroLibro.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-
-
 public class EstudianteServices(IDbContextFactory<Contexto> DbFactory)
 {
     public async Task<bool> Existe(int estudianteId)
