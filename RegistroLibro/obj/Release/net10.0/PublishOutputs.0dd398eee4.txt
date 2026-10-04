@@ -1,6 +1,7 @@
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\RegistroLibro.exe
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\appsettings.Development.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\appsettings.json
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\dotnet-tools.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\RegistroLibro.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\RegistroLibro.runtimeconfig.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\PubTmp\Out\RegistroLibro.pdb

@@ -2,7 +2,6 @@
 using RegistroLibro.Context;
 using Microsoft.EntityFrameworkCore;
 
-
 public class GestionLibro(IDbContextFactory<Contexto> DbFactory)
 {
     public async Task<bool> Existe(int libroId)

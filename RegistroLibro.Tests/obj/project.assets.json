@@ -920,11 +920,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro.Tests\\RegistroLibro.Tests.csproj",
+      "projectUniqueName": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLIbro.Tests\\RegistroLibro.Tests.csproj",
       "projectName": "RegistroLibro.Tests",
-      "projectPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro.Tests\\RegistroLibro.Tests.csproj",
+      "projectPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLIbro.Tests\\RegistroLibro.Tests.csproj",
       "packagesPath": "C:\\Users\\mejia\\.nuget\\packages\\",
-      "outputPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro.Tests\\obj\\",
+      "outputPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLIbro.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

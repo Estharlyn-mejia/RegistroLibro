@@ -4,7 +4,6 @@
 @inject EstudianteServices estudianteServices
 @inject GestionLibro gestionLibro
 @inject NavigationManager Navigation
-
 @rendermode InteractiveServer
 
 <PageTitle>Registro de Prestamo</PageTitle>
@@ -184,35 +183,28 @@
     </div>
 </div>
 
-
 @code
 {
     public List<Prestamo> ListaPrestamos { get; set; } =
-        new List<Prestamo>();
-
+            new List<Prestamo>();
     public List<Estudiantes> ListaEstudiantes { get; set; } =
-        new List<Estudiantes>();
-
+            new List<Estudiantes>();
     public List<Libros> ListaLibros { get; set; } =
-        new List<Libros>();
-
+            new List<Libros>();
     public string Filtro { get; set; } = string.Empty;
-
     public string ValorFiltro { get; set; } = string.Empty;
-
 
     protected override async Task OnInitializedAsync()
     {
         ListaPrestamos =
-            await prestamosServices.GetList(p => p.PrestamoId > 0);
+                await prestamosServices.GetList(p => p.PrestamoId > 0);
 
         ListaEstudiantes =
-            await estudianteServices.GetList(e => e.EstudianteId > 0);
+                await estudianteServices.GetList(e => e.EstudianteId > 0);
 
         ListaLibros =
-            await gestionLibro.ObtenerTodos();
+                await gestionLibro.ObtenerTodos();
     }
-
 
     private async Task Buscar()
     {
@@ -224,8 +216,8 @@
                     .Where(e => e.Nombre.Contains(
                         ValorFiltro,
                         StringComparison.OrdinalIgnoreCase))
-                    .Select(e => e.EstudianteId)
-                    .ToList();
+                        .Select(e => e.EstudianteId)
+                        .ToList();
 
                 ListaPrestamos = (await prestamosServices.ObtenerTodos())
                     .Where(p => estudiantesEncontrados.Contains(p.EstudianteId))
@@ -238,28 +230,25 @@
                     .Where(l => l.Titulo.Contains(
                         ValorFiltro,
                         StringComparison.OrdinalIgnoreCase))
-                    .Select(l => l.LibroId)
-                    .ToList();
+                        .Select(l => l.LibroId)
+                        .ToList();
 
                 ListaPrestamos = (await prestamosServices.ObtenerTodos())
                     .Where(p => librosEncontrados.Contains(p.LibroId))
                     .ToList();
             }
-
             else
             {
                 ListaPrestamos =
-                    await prestamosServices.ObtenerTodos();
+                        await prestamosServices.ObtenerTodos();
             }
         }
         else
         {
             ListaPrestamos =
-                await prestamosServices.ObtenerTodos();
+                        await prestamosServices.ObtenerTodos();
         }
     }
-
-
     private async Task Restablecer()
     {
         ListaPrestamos =
@@ -269,20 +258,14 @@
 
         ValorFiltro = string.Empty;
     }
-
-
     private void MostrarPantallaCrear()
     {
         Navigation.NavigateTo("/Prestamo/Crear");
     }
-
-
     private void MostrarPantallaEditar(int id)
     {
         Navigation.NavigateTo($"/Prestamo/Editar/{id}");
     }
-
-
     private void MostrarPantallaEliminar(int id)
     {
         Navigation.NavigateTo($"/Prestamo/Editar/{id}");

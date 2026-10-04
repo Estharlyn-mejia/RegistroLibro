@@ -2,6 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>https</ActiveDebugProfile>
-    <NameOfLastUsedPublishProfile>C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Properties\PublishProfiles\RegistroLibro20260927195814 - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

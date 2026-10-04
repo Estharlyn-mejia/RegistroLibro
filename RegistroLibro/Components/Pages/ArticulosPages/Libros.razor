@@ -1,9 +1,7 @@
 ﻿@page "/libros"
 @rendermode InteractiveServer
-
 @inject GestionLibro GestionLibro
 @inject NavigationManager Navigation
-
 <PageTitle>Biblioteca</PageTitle>
 
 <div class="container mt-4">
@@ -72,7 +70,6 @@
             <div class="col-4">
 
                 <div class="input-group">
-
                     <input class="form-control"
                             @bind="valorFiltro"
                             placeholder="Buscar" />
@@ -80,13 +77,9 @@
                     <button type="button"
                             class="btn btn-outline-primary"
                             @onclick="Buscar">
-
                         Buscar
-
                     </button>
-
                 </div>
-
             </div>
 
             @*Restablecer*@
@@ -95,20 +88,14 @@
                 <button type="button"
                         class="btn btn-outline-secondary"
                         @onclick="Restablecer">
-
                     Restablecer
-
                 </button>
-
             </div>
-
         </div>
 
-        @* Tabla *@
+        @*Tabla*@
         <table class="table table-bordered mt-3 text-center">
-
             <thead>
-
                 <tr>
                     <th>LibroId</th>
                     <th>Título</th>
@@ -116,65 +103,44 @@
                     <th>Año de Publicación</th>
                     <th>Acciones</th>
                 </tr>
-
             </thead>
-
             <tbody>
-
                 @foreach (var libro in ListaLibros)
                 {
                     <tr>
-
                         <td>
                             @libro.LibroId
                         </td>
-
                         <td>
                             @libro.Titulo
                         </td>
-
                         <td>
                             @libro.Autor
                         </td>
-
                         <td>
                             @libro.AnoPublicacion
                         </td>
-
                         <td>
-
                             <button type="button"
                                     class="btn btn-outline-warning"
                                     @onclick="() => MostrarPantallaEditar(libro.LibroId)">
-
                                 Editar
-
                             </button>
-
                             <button type="button"
                                     class="btn btn-outline-danger"
                                     @onclick="() => MostrarPantallaEliminar(libro.LibroId)">
-
                                 Eliminar
-
                             </button>
-
                         </td>
-
                     </tr>
                 }
-
             </tbody>
-
         </table>
-
         <p>
             <strong>Cantidad:</strong> @ListaLibros.Count
         </p>
-
     </div>
     </div>
-
 </div>
 
 @*Crear libro*@
@@ -183,29 +149,20 @@
     <button type="button"
             class="btn btn-primary"
             @onclick="MostrarPantallaCrear">
-
         Crear Libro
-
     </button>
-
 </div>
-
 
 @code
 {
     public List<RegistroLibro.Models.Libros> ListaLibros { get; set; } = [];
-
     public string? filtro { get; set; }
-
     public string? valorFiltro { get; set; }
-
 
     protected override async Task OnInitializedAsync()
     {
         ListaLibros = await GestionLibro.ObtenerTodos();
     }
-
-
     private async Task Buscar()
     {
         if (!string.IsNullOrWhiteSpace(valorFiltro))
@@ -214,7 +171,6 @@
                 int.TryParse(valorFiltro, out int libroId))
             {
                 var libro = await GestionLibro.Buscar(libroId);
-
                 if (libro != null)
                 {
                     ListaLibros = [libro];
@@ -224,7 +180,6 @@
                     ListaLibros = [];
                 }
             }
-
             else if (filtro == "Titulo")
             {
                 ListaLibros = (await GestionLibro.ObtenerTodos())
@@ -232,7 +187,6 @@
                     .Contains(valorFiltro.ToLower()))
                     .ToList();
             }
-
             else if (filtro == "Autor")
             {
                 ListaLibros = (await GestionLibro.ObtenerTodos())
@@ -240,7 +194,6 @@
                     .Contains(valorFiltro.ToLower()))
                     .ToList();
             }
-
             else if (filtro == "AnoPublicacion")
             {
                 ListaLibros = (await GestionLibro.ObtenerTodos())
@@ -248,7 +201,6 @@
                     .Contains(valorFiltro))
                     .ToList();
             }
-
             else
             {
                 ListaLibros = (await GestionLibro.ObtenerTodos())
@@ -265,29 +217,22 @@
         }
     }
 
-
     private async Task Restablecer()
     {
         ListaLibros = await GestionLibro.ObtenerTodos();
-
         filtro = string.Empty;
-
         valorFiltro = string.Empty;
     }
-
 
     public void MostrarPantallaCrear()
     {
         Navigation.NavigateTo("/crear-libro");
     }
 
-
     public void MostrarPantallaEditar(int id)
     {
         Navigation.NavigateTo($"/editar-libro/{id}");
     }
-
-
     public void MostrarPantallaEliminar(int id)
     {
         Navigation.NavigateTo($"/editar-libro/{id}");
