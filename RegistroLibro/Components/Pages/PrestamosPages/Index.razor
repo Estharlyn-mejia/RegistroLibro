@@ -4,7 +4,6 @@
 @inject EstudianteServices estudianteServices
 @inject GestionLibro gestionLibro
 @inject NavigationManager Navigation
-
 @rendermode InteractiveServer
 
 <PageTitle>Registro de Prestamo</PageTitle>
@@ -184,22 +183,16 @@
     </div>
 </div>
 
-
 @code
 {
     public List<Prestamo> ListaPrestamos { get; set; } =
         new List<Prestamo>();
-
     public List<Estudiantes> ListaEstudiantes { get; set; } =
         new List<Estudiantes>();
-
     public List<Libros> ListaLibros { get; set; } =
         new List<Libros>();
-
     public string Filtro { get; set; } = string.Empty;
-
     public string ValorFiltro { get; set; } = string.Empty;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -212,7 +205,6 @@
         ListaLibros =
             await gestionLibro.ObtenerTodos();
     }
-
 
     private async Task Buscar()
     {
@@ -245,7 +237,6 @@
                     .Where(p => librosEncontrados.Contains(p.LibroId))
                     .ToList();
             }
-
             else
             {
                 ListaPrestamos =
@@ -258,8 +249,6 @@
                 await prestamosServices.ObtenerTodos();
         }
     }
-
-
     private async Task Restablecer()
     {
         ListaPrestamos =
@@ -269,20 +258,14 @@
 
         ValorFiltro = string.Empty;
     }
-
-
     private void MostrarPantallaCrear()
     {
         Navigation.NavigateTo("/Prestamo/Crear");
     }
-
-
     private void MostrarPantallaEditar(int id)
     {
         Navigation.NavigateTo($"/Prestamo/Editar/{id}");
     }
-
-
     private void MostrarPantallaEliminar(int id)
     {
         Navigation.NavigateTo($"/Prestamo/Editar/{id}");
