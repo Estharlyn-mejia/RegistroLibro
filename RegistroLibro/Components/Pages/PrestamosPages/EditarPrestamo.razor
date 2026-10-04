@@ -4,7 +4,6 @@
 @inject PrestamosServices prestamosServices
 @inject EstudianteServices estudianteServices
 @inject GestionLibro gestionLibro
-
 @rendermode InteractiveServer
 
 <PageTitle>Editar Prestamo</PageTitle>
@@ -260,7 +259,6 @@
     {
         mostrarConfirmacion = true;
     }
-
     private void CancelarEliminar()
     {
         mostrarConfirmacion = false;
@@ -275,8 +273,7 @@
         }
         else
         {
-            mensaje =
-                "No se pudo eliminar el prestamo";
+            mensaje = "No se pudo eliminar el prestamo";
         }
     }
     private void Volver()
