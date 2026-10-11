@@ -4,6 +4,7 @@ namespace RegistroLibro.Models;
 
 public class Devolver
 {
+	[Key]
 	[Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un préstamo válido")]
 	public int PrestamoId { get; set; }
 
