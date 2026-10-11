@@ -100,6 +100,10 @@ namespace RegistroLibro.Migrations
 
                     b.HasKey("PrestamoId");
 
+                    b.HasIndex("LibroId")
+                        .IsUnique()
+                        .HasFilter("[Estado] = N'Prestado'");
+
                     b.ToTable("Prestamos");
                 });
 #pragma warning restore 612, 618

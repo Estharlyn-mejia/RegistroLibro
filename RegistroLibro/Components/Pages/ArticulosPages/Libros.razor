@@ -5,14 +5,14 @@
 <PageTitle>Biblioteca</PageTitle>
 
 <div class="container mt-4">
-    <div class="card">
-
-    @*Header*@
-    <div class="card-header">
-        <div class="card-header text-center">
-            <h3>Consulta de Libros</h3>
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Consulta de Libros</h5>
+            <a href="/crear-libro" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span>
+                Crear
+            </a>
         </div>
-    </div>
 
     @*Formulario*@
     <div class="card-body">
@@ -140,17 +140,7 @@
             <strong>Cantidad:</strong> @ListaLibros.Count
         </p>
     </div>
-    </div>
 </div>
-
-@*Crear libro*@
-<div class="container mt-3">
-
-    <button type="button"
-            class="btn btn-primary"
-            @onclick="MostrarPantallaCrear">
-        Crear Libro
-    </button>
 </div>
 
 @code
