@@ -93,49 +93,25 @@
             </div>
         </div>
 
-        @*Tabla*@
-        <table class="table table-bordered mt-3 text-center">
-            <thead>
-                <tr>
-                    <th>LibroId</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Año de Publicación</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var libro in ListaLibros)
-                {
-                    <tr>
-                        <td>
-                            @libro.LibroId
-                        </td>
-                        <td>
-                            @libro.Titulo
-                        </td>
-                        <td>
-                            @libro.Autor
-                        </td>
-                        <td>
-                            @libro.AnoPublicacion
-                        </td>
-                        <td>
-                            <button type="button"
-                                    class="btn btn-outline-warning"
-                                    @onclick="() => MostrarPantallaEditar(libro.LibroId)">
-                                Editar
-                            </button>
-                            <button type="button"
-                                    class="btn btn-outline-danger"
-                                    @onclick="() => MostrarPantallaEliminar(libro.LibroId)">
-                                Eliminar
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <QuickGrid Items="ListaLibros.AsQueryable()"
+                    Class="table table-bordered mt-3 text-center">
+            <PropertyColumn Property="libro => libro.LibroId" Title="LibroId" Sortable="true" />
+            <PropertyColumn Property="libro => libro.Titulo" Title="Título" Sortable="true" />
+            <PropertyColumn Property="libro => libro.Autor" Title="Autor" Sortable="true" />
+            <PropertyColumn Property="libro => libro.AnoPublicacion" Title="Año de Publicación" Sortable="true" />
+            <TemplateColumn Title="Acciones">
+                <button type="button"
+                        class="btn btn-outline-warning"
+                        @onclick="() => MostrarPantallaEditar(context.LibroId)">
+                    Editar
+                </button>
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        @onclick="() => MostrarPantallaEliminar(context.LibroId)">
+                    Eliminar
+                </button>
+            </TemplateColumn>
+        </QuickGrid>
         <p>
             <strong>Cantidad:</strong> @ListaLibros.Count
         </p>

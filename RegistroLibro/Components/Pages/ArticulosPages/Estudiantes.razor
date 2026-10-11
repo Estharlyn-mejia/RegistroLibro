@@ -95,58 +95,26 @@
                 </div>
             </div>
 
-            @*Tabla*@
-            <table class="table table-bordered mt-3 text-center">
-                <thead>
-                    <tr>
-                        <th>Estudiante ID</th>
-                        <th>Nombre</th>
-                        <th>Direccion</th>
-                        <th>Email</th>
-                        <th>Fecha de Nacimiento</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach(var estudiantes in ListaEstudiantes){
-                        <tr>
-                            <td>
-                                @estudiantes.EstudianteId
-                            </td>
-
-                            <td>
-                                @estudiantes.Nombre
-                            </td>
-
-                            <td>
-                                @estudiantes.Direccion
-                            </td>
-
-                            <td>
-                                @estudiantes.Emil
-                            </td>
-
-                            <td>
-                                @estudiantes.Fecha
-                            </td>
-
-                            <td>
-                                <button type="button"
-                                        class="btn btn-outline-warning"
-                                        @onclick="() => MostrarPantallaEditar(estudiantes.EstudianteId)">
-                                    Editar
-                                </button>
-
-                                <button type="button"
-                                        class="btn btn-outline-danger"
-                                        @onclick="() => MostrarPantallaEliminar(estudiantes.EstudianteId)">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <QuickGrid Items="ListaEstudiantes.AsQueryable()"
+                       Class="table table-bordered mt-3 text-center">
+                <PropertyColumn Property="estudiante => estudiante.EstudianteId" Title="Estudiante ID" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Nombre" Title="Nombre" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Direccion" Title="Dirección" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Emil" Title="Email" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Fecha" Title="Fecha de Nacimiento" Sortable="true" />
+                <TemplateColumn Title="Acciones">
+                    <button type="button"
+                            class="btn btn-outline-warning"
+                            @onclick="() => MostrarPantallaEditar(context.EstudianteId)">
+                        Editar
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            @onclick="() => MostrarPantallaEliminar(context.EstudianteId)">
+                        Eliminar
+                    </button>
+                </TemplateColumn>
+            </QuickGrid>
             <p>
                 <strong>Cantidad:</strong>@ListaEstudiantes.Count
             </p>
