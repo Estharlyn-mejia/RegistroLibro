@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a243e77f9f931bf8a751dce5c6eec502dd619e3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c1743dd5ab660911604024ca536d7466250ab0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

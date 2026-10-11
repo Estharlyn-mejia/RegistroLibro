@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V/Z9Xvb/wGI=",
+  "dgSpecHash": "t24H0D2HO6g=",
   "success": true,
-  "projectFilePath": "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
+  "projectFilePath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mejia\\.nuget\\packages\\aplicada1.core\\1.1.0\\aplicada1.core.1.1.0.nupkg.sha512",
     "C:\\Users\\mejia\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",

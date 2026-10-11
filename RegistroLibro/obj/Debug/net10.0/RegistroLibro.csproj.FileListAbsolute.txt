@@ -378,3 +378,13 @@ c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\QuickGridValidation\
 c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\QuickGridValidation\runtimes\win-arm64\native\msalruntime_arm64.dll
 c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\QuickGridValidation\runtimes\win-x64\native\msalruntime.dll
 c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\QuickGridValidation\runtimes\win-x86\native\msalruntime_x86.dll
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\appsettings.Development.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\appsettings.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\dotnet-tools.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.staticwebassets.runtime.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.staticwebassets.endpoints.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.exe
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.deps.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.runtimeconfig.json
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.dll
+c:\Aplicada 1\RegistroLibro\RegistroLibro\bin\QuickGridValidation\RegistroLibro.pdb
