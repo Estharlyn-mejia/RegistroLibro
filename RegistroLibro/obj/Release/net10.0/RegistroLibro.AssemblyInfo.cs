@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd2bec529d393390b33193c746726de9d0fa42c0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+00bbc5138b5902266ca244249cad84137de3d4ae")]
 [assembly: System.Reflection.AssemblyProductAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RegistroLibro")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

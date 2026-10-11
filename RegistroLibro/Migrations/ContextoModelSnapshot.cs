@@ -65,6 +65,9 @@ namespace RegistroLibro.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -100,11 +103,32 @@ namespace RegistroLibro.Migrations
 
                     b.HasKey("PrestamoId");
 
+                    b.HasIndex("EstudianteId");
+
                     b.HasIndex("LibroId")
                         .IsUnique()
                         .HasFilter("[Estado] = N'Prestado'");
 
                     b.ToTable("Prestamos");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.HasOne("RegistroLibro.Models.Estudiantes", "Estudiante")
+                        .WithMany()
+                        .HasForeignKey("EstudianteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RegistroLibro.Models.Libros", "Libro")
+                        .WithMany()
+                        .HasForeignKey("LibroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estudiante");
+
+                    b.Navigation("Libro");
                 });
 #pragma warning restore 612, 618
         }

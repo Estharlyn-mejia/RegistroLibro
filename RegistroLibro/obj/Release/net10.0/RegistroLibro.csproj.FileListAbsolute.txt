@@ -216,7 +216,6 @@ C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\comp
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\048x96kjff-{0}-9hsif5t8mt-9hsif5t8mt.gz
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\n0o27d09lo-{0}-dwu72t6gfx-dwu72t6gfx.gz
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\8bn3000fm7-{0}-mnccjmrpdk-mnccjmrpdk.gz
-C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\bd87lgt9rr-{0}-sktzzhjgm3-sktzzhjgm3.gz
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\l1ze7vnskg-{0}-4n1bzmnynh-4n1bzmnynh.gz
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\staticwebassets.build.json
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\staticwebassets.build.json.cache
@@ -230,4 +229,7 @@ C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\Regi
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\RegistroLibro.genruntimeconfig.cache
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\ref\RegistroLibro.dll
 C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Release\net10.0\dotnet-tools.json
-C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\staticwebassets.upToDateCheck.txt
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\bin\Release\net10.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\unlu0xluo6-{0}-eu7w3d5g1a-eu7w3d5g1a.gz
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\1x45lb54o8-{0}-boiwgh0w5b-boiwgh0w5b.gz
+C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\obj\Release\net10.0\compressed\bd87lgt9rr-{0}-59gdvl50tr-59gdvl50tr.gz

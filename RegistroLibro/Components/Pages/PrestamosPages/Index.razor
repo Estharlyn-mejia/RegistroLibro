@@ -87,6 +87,9 @@
                 <TemplateColumn Title="Libro" Sortable="true">
                     @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
                 </TemplateColumn>
+                <TemplateColumn Title="Cantidad">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                </TemplateColumn>
                 <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
                 <TemplateColumn Title="Fecha devolución">
                     @(context.FechaDevolucion?.ToShortDateString() ?? "-")
@@ -109,10 +112,14 @@
                     }
                 </TemplateColumn>
             </QuickGrid>
-            @*Cantidad*@
-            <p>
-                <strong>Cantidad:</strong>@ListaPrestamos.Count
-            </p>
+            <div class="d-flex flex-wrap gap-4 mt-3">
+                <p class="mb-0">
+                    <strong>Cantidad de préstamos:</strong> @ListaPrestamos.Count
+                </p>
+                <p class="mb-0">
+                    <strong>Promedio de días prestados:</strong> @PromedioDiasPrestados.ToString("0.0") días
+                </p>
+            </div>
         </div>
     </div>
 </div>
@@ -168,6 +175,10 @@
     private DateTime fechaDevolucion = DateTime.Today;
     private bool mostrarModalDevolucion;
     private string mensajeDevolucion = string.Empty;
+    private double PromedioDiasPrestados => ListaPrestamos.Count == 0
+        ? 0
+        : ListaPrestamos.Average(prestamo =>
+            ((prestamo.FechaDevolucion ?? DateTime.Today).Date - prestamo.FechaPrestamo.Date).TotalDays);
 
     protected override async Task OnInitializedAsync()
     {

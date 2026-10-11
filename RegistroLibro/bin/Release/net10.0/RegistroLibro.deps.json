@@ -8,10 +8,11 @@
     ".NETCoreApp,Version=v10.0": {
       "RegistroLibro/1.0.0": {
         "dependencies": {
+          "Aplicada1.Core": "1.1.0",
           "Blazor.Bootstrap": "4.0.0",
+          "Microsoft.AspNetCore.Components.QuickGrid": "10.0.12",
           "Microsoft.EntityFrameworkCore.SqlServer": "10.0.12",
-          "Microsoft.EntityFrameworkCore.Tools": "10.0.12",
-          "Aplicada1.Core": "1.1.0"
+          "Microsoft.EntityFrameworkCore.Tools": "10.0.12"
         },
         "runtime": {
           "RegistroLibro.dll": {}
@@ -64,6 +65,14 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.QuickGrid/10.0.12": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.dll": {
+            "assemblyVersion": "10.0.12.0",
+            "fileVersion": "10.0.1226.42308"
           }
         }
       },
@@ -857,6 +866,13 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.QuickGrid/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-i2EOZdj8vblHsQS0T3w+I49Qr3dK03nFDvD2t7C/NbSLq3rkZsJCQsdegvemd11/bE/ZlYJtcq0rYRjD1jr45w==",
+      "path": "microsoft.aspnetcore.components.quickgrid/10.0.12",
+      "hashPath": "microsoft.aspnetcore.components.quickgrid.10.0.12.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
       "type": "package",
