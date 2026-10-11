@@ -9,6 +9,8 @@ public class Contexto : DbContext
     public DbSet<Estudiantes> Estudiantes{get; set;}
     public DbSet<Prestamo> Prestamos{get; set;}
 
+    public DbSet<Devolver> Devolvers{get; set;}
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Prestamo>()
