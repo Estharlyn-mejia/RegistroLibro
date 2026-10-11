@@ -7,8 +7,21 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory){
     public async Task<bool> Guardar(Prestamo prestamo)
     {
         await using var Contexto = await contextFactory.CreateDbContextAsync();
+        if (await Contexto.Prestamos.AnyAsync(p =>
+                p.LibroId == prestamo.LibroId && p.Estado == "Prestado"))
+        {
+            return false;
+        }
+
         Contexto.Prestamos.Add(prestamo);
         return await Contexto.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> EstaPrestado(int libroId)
+    {
+        await using var Contexto = await contextFactory.CreateDbContextAsync();
+        return await Contexto.Prestamos.AnyAsync(p =>
+            p.LibroId == libroId && p.Estado == "Prestado");
     }
 
     public async Task<Prestamo?> Buscar(int prestamoId)

@@ -109,24 +109,6 @@
                 </div>
 
 
-                @*Estado*@
-                <div class="mb-3">
-                    <label class="form-label">
-                        <strong>Estado</strong>
-                    </label>
-
-                    <InputSelect class="form-control form-select"
-                                @bind-Value="prestamo.Estado">
-
-                        <option value="">Elija una opción</option>
-                        <option value="Prestado">Prestado</option>
-                        <option value="Devuelto">Devuelto</option>
-
-                    </InputSelect>
-
-                    <ValidationMessage For="() => prestamo.Estado" />
-                </div>
-
             </div>
 
 
@@ -173,8 +155,13 @@
     {
         listaEstudiantes = await estudianteServices.GetList(e => e.EstudianteId > 0);
 
-        listaLibros = await gestionLibro.ObtenerTodos();
+        var prestamosActivos = await prestamosServices.GetList(p => p.Estado == "Prestado");
+        var librosPrestados = prestamosActivos.Select(p => p.LibroId).ToHashSet();
+        listaLibros = (await gestionLibro.ObtenerTodos())
+            .Where(libro => !librosPrestados.Contains(libro.LibroId))
+            .ToList();
         prestamo.FechaPrestamo = DateTime.Now;
+        prestamo.Estado = "Prestado";
     }
 
 
@@ -194,6 +181,11 @@
             mensaje = "Debe seleccionar un libro.";
             return;
         }
+        if (await prestamosServices.EstaPrestado(prestamo.LibroId))
+        {
+            mensaje = "Este libro ya tiene un préstamo activo.";
+            return;
+        }
         if (prestamo.FechaPrestamo > DateTime.Now)
         {
             mensaje = "La fecha de préstamo no puede ser mayor que la fecha actual.";
@@ -205,12 +197,6 @@
             mensaje = "La fecha de devolución no puede ser menor que la fecha de préstamo.";
             return;
         }
-        if (string.IsNullOrWhiteSpace(prestamo.Estado))
-        {
-            mensaje = "Debe seleccionar un estado.";
-            return;
-        }
-
         try
         {
             var creado = await prestamosServices.Guardar(prestamo);

@@ -85,6 +85,25 @@
           "buildMultiTargeting/Microsoft.AspNetCore.App.Internal.Assets.targets": {}
         }
       },
+      "Microsoft.AspNetCore.Components.QuickGrid/10.0.12": {
+        "type": "package",
+        "compile": {
+          "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/Microsoft.AspNetCore.Components.QuickGrid.props": {}
+        },
+        "buildMultiTargeting": {
+          "buildMultiTargeting/Microsoft.AspNetCore.Components.QuickGrid.props": {}
+        }
+      },
       "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
         "type": "package",
         "compile": {
@@ -1237,6 +1256,29 @@
         "buildTransitive/Microsoft.AspNetCore.App.Internal.Assets.targets",
         "microsoft.aspnetcore.app.internal.assets.10.0.12.nupkg.sha512",
         "microsoft.aspnetcore.app.internal.assets.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Components.QuickGrid/10.0.12": {
+      "sha512": "i2EOZdj8vblHsQS0T3w+I49Qr3dK03nFDvD2t7C/NbSLq3rkZsJCQsdegvemd11/bE/ZlYJtcq0rYRjD1jr45w==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.components.quickgrid/10.0.12",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.txt",
+        "build/Microsoft.AspNetCore.Components.QuickGrid.props",
+        "build/Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+        "build/Microsoft.AspNetCore.StaticWebAssets.props",
+        "buildMultiTargeting/Microsoft.AspNetCore.Components.QuickGrid.props",
+        "buildTransitive/Microsoft.AspNetCore.Components.QuickGrid.props",
+        "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.dll",
+        "lib/net10.0/Microsoft.AspNetCore.Components.QuickGrid.xml",
+        "microsoft.aspnetcore.components.quickgrid.10.0.12.nupkg.sha512",
+        "microsoft.aspnetcore.components.quickgrid.nuspec",
+        "staticwebassets/Microsoft.AspNetCore.Components.QuickGrid.boiwgh0w5b.bundle.scp.css",
+        "staticwebassets/QuickGrid.razor.js"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
@@ -3241,11 +3283,12 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "Aplicada1.Core >= 1.1.0",
       "Blazor.Bootstrap >= 4.0.0",
       "Microsoft.AspNetCore.App.Internal.Assets >= 10.0.12",
+      "Microsoft.AspNetCore.Components.QuickGrid >= 10.0.12",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.12",
-      "Microsoft.EntityFrameworkCore.Tools >= 10.0.12",
-      "aplicada1.core >= 1.1.0"
+      "Microsoft.EntityFrameworkCore.Tools >= 10.0.12"
     ]
   },
   "packageFolders": {
@@ -3300,6 +3343,10 @@
         "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
+          "Aplicada1.Core": {
+            "target": "Package",
+            "version": "[1.1.0, )"
+          },
           "Blazor.Bootstrap": {
             "target": "Package",
             "version": "[4.0.0, )"
@@ -3310,6 +3357,10 @@
             "version": "[10.0.12, )",
             "autoReferenced": true
           },
+          "Microsoft.AspNetCore.Components.QuickGrid": {
+            "target": "Package",
+            "version": "[10.0.12, )"
+          },
           "Microsoft.EntityFrameworkCore.SqlServer": {
             "target": "Package",
             "version": "[10.0.12, )"
@@ -3319,10 +3370,6 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[10.0.12, )"
-          },
-          "aplicada1.core": {
-            "target": "Package",
-            "version": "[1.1.0, )"
           }
         },
         "imports": [

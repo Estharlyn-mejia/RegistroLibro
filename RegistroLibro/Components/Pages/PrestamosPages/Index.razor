@@ -12,12 +12,15 @@
     <div class="card shadow-lg">
 
         @*Header*@
-        <div class="card-header">
-            <div class="text-center">
-                <h3>
-                    <strong>Consulta de Prestamo</strong>
-                </h3>
-            </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Registro de Prestamos</h5>
+            <a href="/Prestamo/Crear" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span>
+                Crear
+            </a>
+        </div>
+
+        <div class="card-body">
             
             @*Titulos*@
             <div class="row">
@@ -75,111 +78,38 @@
                     </button>
                 </div>
             </div>
-            @*Tabla*@
-            <table class="table table-bordered mt-3 text-center">
-                <thead>
-                    <tr>
-                        <th>PrestamoId</th>
-                        <th>Estudiante</th>
-                        <th>Libro</th>
-                        <th>Fecha prestamo</th>
-                        <th>Fecha devolucion</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var prestamo in ListaPrestamos)
-                    {
-                        <tr>
-                            <td>
-                                @prestamo.PrestamoId
-                            </td>
-                            @* Estudiante *@
-                            <td>
-                                @{
-                                    var estudiante = ListaEstudiantes
-                                        .FirstOrDefault(e =>
-                                            e.EstudianteId == prestamo.EstudianteId);
-                                }
-                                @if (estudiante != null)
-                                {
-                                    @estudiante.Nombre
-                                }
-                                else
-                                {
-                                    <span>No encontrado</span>
-                                }
-                            </td>
-
-                            @*Libro*@
-                            <td>
-                                @{
-                                    var libro = ListaLibros
-                                        .FirstOrDefault(l =>
-                                            l.LibroId == prestamo.LibroId);
-                                }
-                                @if (libro != null)
-                                {
-                                    @libro.Titulo
-                                }
-                                else
-                                {
-                                    <span>No encontrado</span>
-                                }
-                            </td>
-
-                            @*Fecha prestamo*@
-                            <td>
-                                @prestamo.FechaPrestamo.ToShortDateString()
-                            </td>
-
-                            @*Fecha devolucion*@
-                            <td>
-                                @if (prestamo.FechaDevolucion.HasValue)
-                                {
-                                    @prestamo.FechaDevolucion.Value.ToShortDateString()
-                                }
-                                else
-                                {
-                                    <span>-</span>
-                                }
-                            </td>
-                            @* Estado *@
-                            <td>
-                                @prestamo.Estado
-                            </td>
-                            @*Acciones*@
-                            <td>
-                                <button type="button"
-                                        class="btn btn-outline-warning"
-                                        @onclick="() => MostrarPantallaEditar(prestamo.PrestamoId)">
-                                    Editar
-                                </button>
-                                <button type="button"
-                                        class="btn btn-outline-danger"
-                                        @onclick="() => MostrarPantallaEliminar(prestamo.PrestamoId)">
-                                    Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <QuickGrid Items="ListaPrestamos.AsQueryable()"
+                       Class="table table-bordered mt-3 text-center">
+                <PropertyColumn Property="prestamo => prestamo.PrestamoId" Title="PrestamoId" Sortable="true" />
+                <TemplateColumn Title="Estudiante" Sortable="true">
+                    @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == context.EstudianteId)?.Nombre ?? "No encontrado")
+                </TemplateColumn>
+                <TemplateColumn Title="Libro" Sortable="true">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
+                </TemplateColumn>
+                <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
+                <TemplateColumn Title="Fecha devolución">
+                    @(context.FechaDevolucion?.ToShortDateString() ?? "-")
+                </TemplateColumn>
+                <PropertyColumn Property="prestamo => prestamo.Estado" Title="Estado" Sortable="true" />
+                <TemplateColumn Title="Acciones">
+                    <button type="button"
+                            class="btn btn-outline-warning"
+                            @onclick="() => MostrarPantallaEditar(context.PrestamoId)">
+                        Editar
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            @onclick="() => MostrarPantallaEliminar(context.PrestamoId)">
+                        Eliminar
+                    </button>
+                </TemplateColumn>
+            </QuickGrid>
             @*Cantidad*@
             <p>
                 <strong>Cantidad:</strong>@ListaPrestamos.Count
             </p>
         </div>
-    </div>
-    @*Crear*@
-    <div class="container mt-3">
-
-        <button type="button"
-                class="btn btn-primary"
-                @onclick="MostrarPantallaCrear">
-            Crear Prestamo
-        </button>
     </div>
 </div>
 

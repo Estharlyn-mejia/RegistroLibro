@@ -8,4 +8,12 @@ public class Contexto : DbContext
     public DbSet<Libros> Libros { get; set; }
     public DbSet<Estudiantes> Estudiantes{get; set;}
     public DbSet<Prestamo> Prestamos{get; set;}
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Prestamo>()
+            .HasIndex(prestamo => prestamo.LibroId)
+            .IsUnique()
+            .HasFilter("[Estado] = N'Prestado'");
+    }
 }
