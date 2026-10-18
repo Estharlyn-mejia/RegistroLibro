@@ -27,4 +27,5 @@ public partial class Prestamo
 
     [Required(ErrorMessage = "Este campo es obligatorio")]
     public string Estado { get; set; } = string.Empty;
-}
+    public List<DetallePrestamo> Detalles {get; set;} = new()
+;}
