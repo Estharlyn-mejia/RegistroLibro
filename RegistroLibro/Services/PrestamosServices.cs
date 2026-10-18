@@ -32,6 +32,64 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
         }
     }
 
+    public async Task<bool> GuardarDetalles(Prestamo prestamo)
+    {
+        if(prestamo.EstudianteId <= 0 ||
+            prestamo.Detalles == null ||
+            prestamo.Detalles.Count == 0)
+        {
+            return false;
+        }
+
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        var librosSolicitados = prestamo.Detalles.GroupBy(d => d.LibroId).Select(g => new
+        {
+            LibroId = g.Key, 
+            Cantidad = g.Sum( d => d.cantidad)
+        }).ToList();
+        
+        foreach(var prestamos in librosSolicitados)
+        {
+            if(prestamos.LibroId <= 0 || prestamos.Cantidad <= 0)
+            {
+                return false;
+            }
+            var libro = await contexto.Libros.FirstOrDefaultAsync(l => l.LibroId == prestamos.LibroId);
+
+            if(libro == null || libro.Cantidad < prestamos.Cantidad)
+            {
+                return false;
+            }
+
+            bool estaPrestado = await contexto.detallePrestamos
+                .AnyAsync(d => d.LibroId == prestamos.LibroId &&
+                d.Prestamo != null &&
+                d.Prestamo.Estado == "Prestado");
+
+            if (estaPrestado)
+            {
+                return false;
+            }
+        }
+
+        prestamo.LibroId = librosSolicitados[0].LibroId;
+        prestamo.Detalles = librosSolicitados.Select(prestamos => new DetallePrestamo
+        {
+            LibroId = prestamos.LibroId,
+            cantidad = prestamos.Cantidad
+        }).ToList();
+
+        contexto.Prestamos.Add(prestamo);
+        try
+        {
+            return await contexto.SaveChangesAsync() > 0;
+        }
+        catch (DbUpdateException)
+        {
+            return false;
+        }
+    }
+
     async Task<Result> IServiceResult<Prestamo, int>.Guardar(Prestamo entidad)
     {
         return await Guardar(entidad)
