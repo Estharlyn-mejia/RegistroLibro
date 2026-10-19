@@ -20,85 +20,89 @@ build_property.TargetFrameworkVersion = v10.0
 build_property.EntryPointFilePath = 
 build_property.RootNamespace = RegistroLibro
 build_property.RootNamespace = RegistroLibro
-build_property.ProjectDir = c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\
+build_property.ProjectDir = C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 10.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro
+build_property.MSBuildProjectDirectory = C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/App.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/App.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearEstudiantes.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearEstudiantes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xDcmVhckVzdHVkaWFudGVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearLibro.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/CrearLibro.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xDcmVhckxpYnJvLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Editar.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Editar.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFZGl0YXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/EditarEstudiante.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/EditarEstudiante.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFZGl0YXJFc3R1ZGlhbnRlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Estudiantes.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Estudiantes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xFc3R1ZGlhbnRlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Libros.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/ArticulosPages/Libros.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBcnRpY3Vsb3NQYWdlc1xMaWJyb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/Error.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/Home.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/Home.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/NotFound.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/NotFound.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xOb3RGb3VuZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/CrearPrestamo.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/CrearPrestamo.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xDcmVhclByZXN0YW1vLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/EditarPrestamo.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/EditarPrestamo.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xFZGl0YXJQcmVzdGFtby5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/Index.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xJbmRleC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Routes.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/PrestamosDevueltos.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xQcmVzdGFtb3NEZXZ1ZWx0b3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/_Imports.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/MainLayout.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-ssdxvl42zt
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/NavMenu.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-fdmi2dvqsu
 
-[c:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/ReconnectModal.razor]
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Layout/ReconnectModal.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcUmVjb25uZWN0TW9kYWwucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-s33iokld20

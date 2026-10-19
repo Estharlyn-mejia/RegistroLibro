@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj": {}
+    "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj": {}
   },
   "projects": {
-    "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj": {
+    "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
+        "projectUniqueName": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
         "projectName": "RegistroLibro",
-        "projectPath": "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
+        "projectPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\RegistroLibro.csproj",
         "packagesPath": "C:\\Users\\mejia\\.nuget\\packages\\",
-        "outputPath": "c:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\obj\\",
+        "outputPath": "C:\\Aplicada 1\\RegistroLibro\\RegistroLibro\\RegistroLibro\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

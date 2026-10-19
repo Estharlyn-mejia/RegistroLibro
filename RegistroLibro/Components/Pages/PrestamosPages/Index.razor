@@ -87,6 +87,9 @@
                 <TemplateColumn Title="Libro" Sortable="true">
                     @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
                 </TemplateColumn>
+                <TemplateColumn Title="Cantidad">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                </TemplateColumn>
                 <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
                 <TemplateColumn Title="Fecha devolución">
                     @(context.FechaDevolucion?.ToShortDateString() ?? "-")
@@ -98,20 +101,65 @@
                             @onclick="() => MostrarPantallaEditar(context.PrestamoId)">
                         Editar
                     </button>
-                    <button type="button"
-                            class="btn btn-outline-danger"
-                            @onclick="() => MostrarPantallaEliminar(context.PrestamoId)">
-                        Eliminar
-                    </button>
+                    
+                    @if (context.Estado == "Prestado")
+                    {
+                        <button type="button"
+                                class="btn btn-outline-success ms-1"
+                                @onclick="() => AbrirModalDevolucion(context)">
+                            Devolución
+                        </button>
+                    }
                 </TemplateColumn>
             </QuickGrid>
-            @*Cantidad*@
-            <p>
-                <strong>Cantidad:</strong>@ListaPrestamos.Count
-            </p>
+            <div class="d-flex flex-wrap gap-4 mt-3">
+                <p class="mb-0">
+                    <strong>Cantidad de préstamos:</strong> @ListaPrestamos.Count
+                </p>
+                <p class="mb-0">
+                    <strong>Promedio de días prestados:</strong> @PromedioDiasPrestados.ToString("0.0") días
+                </p>
+            </div>
         </div>
     </div>
 </div>
+
+@if (mostrarModalDevolucion && prestamoSeleccionado != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Devolución</h5>
+                    <button type="button" class="btn-close" aria-label="Cerrar" @onclick="CerrarModalDevolucion"></button>
+                </div>
+                <div class="modal-body">
+                    @if (!string.IsNullOrWhiteSpace(mensajeDevolucion))
+                    {
+                        <div class="alert alert-danger">@mensajeDevolucion</div>
+                    }
+                    <p>
+                        <strong>Libro:</strong>
+                        @(ListaLibros.FirstOrDefault(libro => libro.LibroId == prestamoSeleccionado.LibroId)?.Titulo ?? "No encontrado")
+                    </p>
+                    <p>
+                        <strong>Estudiante:</strong>
+                        @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == prestamoSeleccionado.EstudianteId)?.Nombre ?? "No encontrado")
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label" for="fechaDevolucion"><strong>Fecha de devolución</strong></label>
+                        <InputDate id="fechaDevolucion" class="form-control" @bind-Value="fechaDevolucion" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModalDevolucion">Cancelar</button>
+                    <button type="button" class="btn btn-success" @onclick="ConfirmarDevolucion">Confirmar devolución</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
 
 @code
 {
@@ -123,6 +171,14 @@
             new List<Libros>();
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
+    private Prestamo? prestamoSeleccionado;
+    private DateTime fechaDevolucion = DateTime.Today;
+    private bool mostrarModalDevolucion;
+    private string mensajeDevolucion = string.Empty;
+    private double PromedioDiasPrestados => ListaPrestamos.Count == 0
+        ? 0
+        : ListaPrestamos.Average(prestamo =>
+            ((prestamo.FechaDevolucion ?? DateTime.Today).Date - prestamo.FechaPrestamo.Date).TotalDays);
 
     protected override async Task OnInitializedAsync()
     {
@@ -199,5 +255,43 @@
     private void MostrarPantallaEliminar(int id)
     {
         Navigation.NavigateTo($"/Prestamo/Editar/{id}");
+    }
+
+    private void AbrirModalDevolucion(Prestamo prestamo)
+    {
+        prestamoSeleccionado = prestamo;
+        fechaDevolucion = DateTime.Today;
+        mensajeDevolucion = string.Empty;
+        mostrarModalDevolucion = true;
+    }
+
+    private void CerrarModalDevolucion()
+    {
+        mostrarModalDevolucion = false;
+        prestamoSeleccionado = null;
+        mensajeDevolucion = string.Empty;
+    }
+
+    private async Task ConfirmarDevolucion()
+    {
+        if (prestamoSeleccionado == null)
+        {
+            return;
+        }
+
+        var resultado = await prestamosServices.RegistrarDevolucion(
+            prestamoSeleccionado.PrestamoId,
+            prestamoSeleccionado.EstudianteId,
+            fechaDevolucion);
+
+        if (resultado.IsFailure)
+        {
+            mensajeDevolucion = resultado.Error.Description;
+            return;
+        }
+
+        prestamoSeleccionado.Estado = "Devuelto";
+        prestamoSeleccionado.FechaDevolucion = fechaDevolucion;
+        CerrarModalDevolucion();
     }
 }
