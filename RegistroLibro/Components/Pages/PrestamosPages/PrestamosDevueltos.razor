@@ -24,16 +24,16 @@
             }
 
             <QuickGrid Items="ListaPrestamos.AsQueryable()"
-                       Class="table table-bordered mt-2 text-center">
+                        Class="table table-bordered mt-2 text-center">
                 <PropertyColumn Property="prestamo => prestamo.PrestamoId" Title="Préstamo" Sortable="true" />
                 <TemplateColumn Title="Estudiante">
                     @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == context.EstudianteId)?.Nombre ?? "No encontrado")
                 </TemplateColumn>
                 <TemplateColumn Title="Libro">
-                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
+                    @NombresLibros(context)
                 </TemplateColumn>
                 <TemplateColumn Title="Cantidad">
-                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                    @context.Detalles.Sum(detalle => detalle.Cantidad)
                 </TemplateColumn>
                 <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
                 <TemplateColumn Title="Fecha devolución" Sortable="true">
@@ -61,4 +61,9 @@
         ListaEstudiantes = await estudianteServices.GetList(estudiante => estudiante.EstudianteId > 0);
         ListaLibros = await gestionLibro.ObtenerTodos();
     }
+
+    private string NombresLibros(Prestamo prestamo) => prestamo.Detalles.Count == 0
+        ? ListaLibros.FirstOrDefault(libro => libro.LibroId == prestamo.LibroId)?.Titulo ?? "No encontrado"
+        : string.Join(", ", prestamo.Detalles.Select(detalle =>
+            ListaLibros.FirstOrDefault(libro => libro.LibroId == detalle.LibroId)?.Titulo ?? "No encontrado"));
 }

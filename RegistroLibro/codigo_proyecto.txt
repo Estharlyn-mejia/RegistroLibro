@@ -1,0 +1,3844 @@
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\dotnet-tools.json ==========
+
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-ef": {
+      "version": "10.0.12",
+      "commands": [
+        "dotnet-ef"
+      ],
+      "rollForward": false
+    }
+  }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Program.cs ==========
+
+
+using Microsoft.EntityFrameworkCore;
+using RegistroLibro.Components;
+using RegistroLibro.Context;
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+
+    var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+    builder.Services.AddDbContextFactory<Contexto>(op => op.UseSqlServer(ConStr));
+
+
+
+builder.Services.AddScoped<GestionLibro>();
+builder.Services.AddScoped<EstudianteServices>();
+builder.Services.AddScoped<PrestamosServices>();
+
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+app.UseHttpsRedirection();
+
+app.UseAntiforgery();
+
+app.MapStaticAssets();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
+
+app.Run();
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\RegistroLibro.csproj ==========
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aplicada1.Core" Version="1.1.0" />
+    <PackageReference Include="Blazor.Bootstrap" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
+</Project>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\_Imports.razor ==========
+
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.JSInterop
+@using RegistroLibro
+@using RegistroLibro.Components
+@using RegistroLibro.Components.Layout
+@using RegistroLibro.Models
+@using Microsoft.IdentityModel.Tokens
+@using BlazorBootstrap
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\App.razor ==========
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+
+    <ResourcePreloader />
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["RegistroLibro.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+</head>
+
+<body>
+    <Routes />
+    <ReconnectModal />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</body>
+
+</html>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Routes.razor ==========
+
+<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Layout\MainLayout.razor ==========
+
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Layout\NavMenu.razor ==========
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">RegistroLibro</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="libros">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Libros
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="ArticulosPages/Estudiantes">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Estudiantes
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/Prestamo/Index">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Prestamo
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/Prestamo/Devueltos">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Préstamos devueltos
+            </NavLink>
+        </div>
+
+    </nav>
+</div>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Layout\ReconnectModal.razor ==========
+
+<script type="module" src="@Assets["Components/Layout/ReconnectModal.razor.js"]"></script>
+
+<dialog id="components-reconnect-modal" data-nosnippet>
+    <div class="components-reconnect-container">
+        <div class="components-rejoining-animation" aria-hidden="true">
+            <div></div>
+            <div></div>
+        </div>
+        <p class="components-reconnect-first-attempt-visible">
+            Rejoining the server...
+        </p>
+        <p class="components-reconnect-repeated-attempt-visible">
+            Rejoin failed... trying again in <span id="components-seconds-to-next-attempt"></span> seconds.
+        </p>
+        <p class="components-reconnect-failed-visible">
+            Failed to rejoin.<br />Please retry or reload the page.
+        </p>
+        <button id="components-reconnect-button" class="components-reconnect-failed-visible">
+            Retry
+        </button>
+        <p class="components-pause-visible">
+            The session has been paused by the server.
+        </p>
+        <p class="components-resume-failed-visible">
+            Failed to resume the session.<br />Please retry or reload the page.
+        </p>
+        <button id="components-resume-button" class="components-pause-visible components-resume-failed-visible">
+            Resume
+        </button>
+    </div>
+</dialog>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\Error.razor ==========
+
+@page "/Error"
+@using System.Diagnostics
+
+<PageTitle>Error</PageTitle>
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@RequestId</code>
+    </p>
+}
+
+<h3>Development Mode</h3>
+<p>
+    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+</p>
+<p>
+    <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+    It can result in displaying sensitive information from exceptions to end users.
+    For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+    and restarting the app.
+</p>
+
+@code{
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    private string? RequestId { get; set; }
+    private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+
+    protected override void OnInitialized() =>
+        RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\Home.razor ==========
+
+@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\NotFound.razor ==========
+
+@page "/not-found"
+@layout MainLayout
+
+<h3>Not Found</h3>
+<p>Sorry, the content you are looking for does not exist.</p>
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\CrearEstudiantes.razor ==========
+
+```razor
+@page "/Articulo/CrearEstudiantes"
+
+@inject EstudianteServices estudianteServices
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Crear Estudiante</PageTitle>
+
+<EditForm Model="@estudiante" OnValidSubmit="@Guardar">
+
+    <DataAnnotationsValidator />
+
+    <div class="container mt-4">
+        <div class="card shadow-lg">
+
+            @*Encabezado*@
+            <div class="card-header text-center">
+                <h3>
+                    <strong>Crear un nuevo estudiante</strong>
+                </h3>
+            </div>
+
+            @*Formulario*@
+            <div class="card-body">
+
+                <div class="row">
+
+                    @*EstudianteId*@
+                    <div class="mb-3">
+                        <label class="form-label" for="EstudianteId">
+                            <strong>EstudianteId</strong>
+                        </label>
+
+                        <InputNumber class="form-control"
+                                    id="EstudianteId"
+                                    @bind-Value="estudiante.EstudianteId"
+                                    readonly>
+                        </InputNumber>
+                    </div>
+
+                    @*Nombre*@
+                    <div class="mb-3">
+                        <label class="form-label" for="Nombre">
+                            <strong>Nombre</strong>
+                        </label>
+
+                        <InputText class="form-control"
+                                    id="Nombre"
+                                    @bind-Value="estudiante.Nombre">
+                        </InputText>
+
+                        <ValidationMessage For="() => estudiante.Nombre" />
+                    </div>
+
+                    @*Direccion*@
+                    <div class="mt-3">
+                        <label class="form-label" for="Dereccion">
+                            <strong>Dereccion</strong>
+                        </label>
+                        <InputText class="form-control"
+                                    id="Dereccion"
+                                    @bind-Value="estudiante.Direccion">
+                        </InputText>
+                        <ValidationMessage For="(() => estudiante.Direccion)"/>
+                    </div>
+
+                    @*Email*@
+                    <div class="mt-3">
+                        <label class="form-label" for="Email">
+                            <strong>Email</strong>
+                        </label>
+                        <InputText class="form-control"
+                                    id="Email"
+                                    @bind-Value="estudiante.Emil">
+                        </InputText>
+
+                        <ValidationMessage For="(() => estudiante.Emil)" />
+                    </div>
+
+                    @*Fecha*@
+                    <div class="mt-3">
+                        <label class="form-label" for="Fecha">
+                            <strong>Fecha de Nacimiento</strong>
+                        </label>
+                        <InputDate class="form-control"
+                                    id="Fecha"
+                                    @bind-Value="estudiante.Fecha">
+                        </InputDate>
+
+                        <ValidationMessage For="(() => estudiante.Fecha)" />
+                    </div>
+
+                </div>
+
+                <br />
+
+                @*Botones*@
+                <div class="text-center mt-4">
+
+                    <button type="submit" 
+                            class="btn btn-primary me-4">
+                            
+                        💾 Guardar
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="Volver">
+                        ⬅️ Volver
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+
+    private RegistroLibro.Models.Estudiantes estudiante =
+        new RegistroLibro.Models.Estudiantes();
+
+    private async Task Guardar()
+    {
+        var crear = await estudianteServices.Guardar(estudiante);
+
+        if (crear)
+        {
+            Volver();
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/ArticulosPages/Estudiantes");
+    }
+}
+```
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\CrearLibro.razor ==========
+
+```razor
+@page "/crear-libro"
+@rendermode InteractiveServer
+@inject GestionLibro GestionLibro
+@inject NavigationManager Navigation
+<PageTitle>Crear Libro</PageTitle>
+<EditForm Model="@libro" OnValidSubmit="@Guardar">
+    <DataAnnotationsValidator />
+    <div class="container mt-4">
+        <div class="card shadow-lg">
+            @*Encabezado*@
+            <div class="card-header text-center">
+                <h3>
+                    <strong>Crear un nuevo libro</strong>
+                </h3>
+            </div>
+
+            @*Formulario*@
+            <div class="card-body">
+                <div class="row">
+
+                    @*LibroId*@
+                    <div class="mt-3">
+                        <label class="form-label" for="LibroId">
+                            <strong>LibroId</strong>
+                        </label>
+
+                        <InputNumber class="form-control"
+                                    id="LibroId"
+                                    @bind-Value="libro.LibroId"
+                                    readonly>
+                        </InputNumber>
+                    </div>
+
+                    @* Titulo *@
+                    <div class="mt-3">
+                        <label class="form-label" for="Titulo">
+                            <strong>Título</strong>
+                        </label>
+
+                        <InputText class="form-control"
+                                    id="Titulo"
+                                    @bind-Value="libro.Titulo">
+                        </InputText>
+
+                        <ValidationMessage For="(() => libro.Titulo)" />
+                    </div>
+
+                    @* Autor *@
+                    <div class="mt-3">
+                        <label class="form-label" for="Autor">
+                            <strong>Autor</strong>
+                        </label>
+
+                        <InputText class="form-control"
+                                    id="Autor"
+                                    @bind-Value="libro.Autor">
+                        </InputText>
+
+                        <ValidationMessage For="(() => libro.Autor)" />
+                    </div>
+
+                    @*Año de publicación*@
+                    <div class="mt-3">
+                        <label class="form-label" for="AnoPublicacion">
+                            <strong>Año de publicación</strong>
+                        </label>
+
+                        <InputNumber class="form-control"
+                                    id="AnoPublicacion"
+                                    @bind-Value="libro.AnoPublicacion">
+                        </InputNumber>
+
+                        <ValidationMessage For="(() => libro.AnoPublicacion)" />
+                    </div>
+                </div>
+            </div>
+
+            @*Botones*@
+            <div class="card-footer text-center">
+
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        @onclick="Volver">
+                    ⬅️ Volver
+                </button>
+
+                <button type="submit"
+                        class="btn btn-outline-success">
+                    💾 Crear
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code
+{
+    private RegistroLibro.Models.Libros libro = new RegistroLibro.Models.Libros();
+    private async Task Guardar()
+    {
+        var crear = await GestionLibro.Guardar(libro);
+        if (crear)
+        {
+            Volver();
+        }
+    }
+    private void Volver()
+    {
+        Navigation.NavigateTo("/libros");
+    }
+}
+
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\Editar.razor ==========
+
+@page "/editar-libro/{LibroId:int}"
+@rendermode InteractiveServer
+
+@inject GestionLibro GestionLibro
+@inject NavigationManager Navigation
+
+<PageTitle>Editar Libro</PageTitle>
+
+<div class="container mt-4">
+
+    <div class="card">
+
+        @*Encabezado*@
+        <div class="card-header text-center">
+            <h3>Editar Libro</h3>
+        </div>
+
+        @*Formulario*@
+        <div class="card-body">
+
+            @*LibroId*@
+            <div class="mb-3">
+                <label class="form-label">
+                    LibroId
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="libro.LibroId"
+                        disabled />
+            </div>
+
+            @*Título*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Titulo
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="libro.Titulo" />
+            </div>
+
+            @*Autor*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Autor
+                </label>
+
+                <input type="text"
+                       class="form-control"
+                       @bind="libro.Autor" />
+            </div>
+
+            @*Año de publicación*@
+            <div class="mb-3">
+                <label class="form-label">
+                    AnoPublicacion
+                </label>
+
+                <input type="number"
+                       class="form-control"
+                       @bind="libro.AnoPublicacion" />
+            </div>
+
+            @*Mensaje*@
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+
+            <div class="d-flex justify-content-center gap-2">
+
+                @*Volver*@
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    ⏪ Volver
+                </button>
+
+                @*Modificar*@
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Modificar">
+                    💾 Modificar
+                </button>
+
+                @*Eliminar*@
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="MostrarConfirmacion">
+                    🗑️ Eliminar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@if (mostrarConfirmacion)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title">Confirmar Eliminacion</h5>
+                </div>
+            
+            <div class="modal-body text-center">
+                <p>¿Seguro de que desea eliminarlo?</p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="CancelarEliminar">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="ConfirmarEliminar">
+                    Si, Eliminar
+                </button>
+            </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public int LibroId { get; set; }
+
+    private RegistroLibro.Models.Libros libro = new RegistroLibro.Models.Libros();
+
+    private string mensaje = "";
+
+    private bool mostrarConfirmacion = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RegistroLibro.Models.Libros? resultado =
+            await GestionLibro.Buscar(LibroId);
+
+        if (resultado != null)
+        {
+            libro = resultado;
+        }
+        else
+        {
+            mensaje = "No se encontró el libro.";
+        }
+    }
+
+    private async Task Modificar()
+    {
+        if (string.IsNullOrWhiteSpace(libro.Titulo))
+        {
+            mensaje = "El título es obligatorio.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(libro.Autor))
+        {
+            mensaje = "El autor es obligatorio.";
+            return;
+        }
+
+        if (libro.AnoPublicacion <= 0)
+        {
+            mensaje = "El año de publicación debe ser un número positivo.";
+            return;
+        }
+
+        bool resultado =
+            await GestionLibro.Modificar(libro);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/libros");
+        }
+        else
+        {
+            mensaje = "Error al modificar el libro.";
+        }
+    }
+
+    private void MostrarConfirmacion()
+    {
+        mostrarConfirmacion = true;
+    }
+
+    private void CancelarEliminar()
+    {
+        mostrarConfirmacion = false;
+    }
+    private async Task ConfirmarEliminar()
+    {
+        mostrarConfirmacion = false;
+
+        bool resultado = await GestionLibro.Eliminar(LibroId);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/libros");
+        }
+        else
+        {
+            mensaje = "Error al eliminar el libro.";
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/libros");
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\EditarEstudiante.razor ==========
+
+@page "/editor-estudiante/{EstudianteId:int}"
+@inject EstudianteServices estudianteServices
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Editar Estudiante</PageTitle>
+
+<div class="container mt-4">
+    <div class="card">
+
+        @*Encabezado*@
+        <div class="card-header text-center">
+            <h3>Editar Estudiante</h3>
+        </div>
+
+        @*Formulario*@
+        <div class="card-body">
+
+            @*EstudianteId*@
+            <div class="mb-3">
+                <label class="form-label">
+                    EstudianteId
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.EstudianteId"
+                        disabled />
+            </div>
+
+            @*Nombre*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Nombre
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Nombre" />
+            </div>
+
+            @*Direccion*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Direccion
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Direccion" />
+            </div>
+
+            @*Email*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Email
+                </label>
+
+                <input type="text"
+                        class="form-control"
+                        @bind="estudiantes.Emil" />
+            </div>
+
+            @*Fecha*@
+            <div class="mb-3">
+                <label class="form-label">
+                    Fecha
+                </label>
+
+                <input type="date"
+                        class="form-control"
+                        @bind="estudiantes.Fecha" />
+            </div>
+
+            @*Mensaje*@
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+            <div class="d-flex justify-content-center gap-2">
+
+                @*Volver*@
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    ⏪ Volver
+                </button>
+
+                @*Modificar*@
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Modificar">
+                    💾 Modificar
+                </button>
+
+                @*Eliminar*@
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="MostrarConfirmacion">
+                    🗑️ Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@if (mostrarConfirmacion)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title">Confirmar Eliminacion</h5>
+                </div>
+
+            <div class="modal-body text-center">
+                <p>¿Seguro de que desea Eliminarlo?</p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button type="butto"
+                        class="btn btn-secondary"
+                        @onclick="CancelarEliminar">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="ConfirmarEliminar">
+                    Si, Eliminar
+                </button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code{
+    [Parameter]
+    public int EstudianteId{get; set;}
+
+    private RegistroLibro.Models.Estudiantes estudiantes = new RegistroLibro.Models.Estudiantes();
+
+    private string mensaje = "";
+
+    private bool mostrarConfirmacion = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RegistroLibro.Models.Estudiantes? resultado = await estudianteServices.Buscar(EstudianteId);
+
+        if(resultado != null)
+        {
+            estudiantes = resultado;
+        }
+        else
+        {
+            mensaje = "No encontrado";
+        }
+    }
+
+    private async Task Modificar()
+    {
+        if(string.IsNullOrWhiteSpace(estudiantes.Nombre))
+        {
+            mensaje = "El nombre es obligatorio";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(estudiantes.Direccion))
+        {
+            mensaje = "La Direccion es obligatoria";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(estudiantes.Emil))
+        {
+            mensaje = "El Email es obligatorio";
+            return;
+        }
+        if(estudiantes.Fecha > DateTime.Now)
+        {
+            mensaje = "La fecha no puede ser mayor a la actual";
+            return;
+        }
+
+        bool resultado = await estudianteServices.Modificar(estudiantes);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/ArticulosPages/Estudiantes");
+        }
+        else
+        {
+            mensaje = "Error al modificar el estudiante";
+        }
+    }
+
+    private void MostrarConfirmacion()
+    {
+        mostrarConfirmacion = true;
+    }
+
+    private void CancelarEliminar()
+    {
+        mostrarConfirmacion = false;
+    }
+
+    private async Task ConfirmarEliminar()
+    {
+        mostrarConfirmacion = false;
+
+        bool resultado = await estudianteServices.Eliminar(EstudianteId);
+
+        if (resultado)
+        {
+            Navigation.NavigateTo("/ArticulosPages/Estudiantes");
+        }
+        else
+        {
+            mensaje = "Error al eliminar el estudiante";
+        }
+    }
+
+    private void Volver()
+    {
+        Navigation.NavigateTo("/ArticulosPages/Estudiantes");
+    }
+
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\Estudiantes.razor ==========
+
+@page "/ArticulosPages/Estudiantes"
+
+@inject EstudianteServices estudianteServices
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Estudiantes Art&iacute; culo</PageTitle>
+
+<div class = "Container-fluid mt-4">
+    <div class = "card shadow-lg">
+        @*Header*@
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><strong>Consulta de Estudiante</strong></h5>
+            <a href="/Articulo/CrearEstudiantes" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span>
+                Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+            
+            @*Body*@
+            <div class="row">
+
+                @*Filtro*@
+                <div class="col-3">
+                    <label class="form-label" for="Filtro">
+                        <strong>Filtrar por</strong>
+                    </label>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="valorFiltro">
+                        <strong>Busqueda</strong>
+                    </label>
+                </div>
+            </div>
+            @*Inputs y botoes*@
+            <div class="row g-3">
+
+                @*Filtro*@
+                <div class="col-3">
+                    <select class="form-select" @bind="filtro">
+
+                        <option value="">
+                            Elija una opcion
+                        </option>
+
+                        <option value="Id">
+                            Id
+                        </option>
+
+                        <option value="Nombre">
+                            Nombre
+                        </option>
+
+                        <option value="Direccion">
+                            Direccion
+                        </option>
+
+                        <option value="Email">
+                            Email
+                        </option>
+                        <option value="Fecha">
+                            Fecha
+                        </option>
+                    </select>
+                </div>
+
+
+                @*Busqueda*@
+                <div class="col-4">
+                    <div class="input-group">
+
+                        <input class="form-control"
+                                @bind="valorFiltro"
+                                placeholder="Buscar" />
+
+                        <button type="button"
+                                class="btn btn-outline-primay"
+                                @onclick="Buscar">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+
+                @*Restablecer*@
+                <div class="col-auto">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            @onclick="Restablecer">
+                        Restablecer
+                    </button>
+                </div>
+            </div>
+
+            <QuickGrid Items="ListaEstudiantes.AsQueryable()"
+                       Class="table table-bordered mt-3 text-center">
+                <PropertyColumn Property="estudiante => estudiante.EstudianteId" Title="Estudiante ID" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Nombre" Title="Nombre" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Direccion" Title="Dirección" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Emil" Title="Email" Sortable="true" />
+                <PropertyColumn Property="estudiante => estudiante.Fecha" Title="Fecha de Nacimiento" Sortable="true" />
+                <TemplateColumn Title="Acciones">
+                    <button type="button"
+                            class="btn btn-outline-warning"
+                            @onclick="() => MostrarPantallaEditar(context.EstudianteId)">
+                        Editar
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            @onclick="() => MostrarPantallaEliminar(context.EstudianteId)">
+                        Eliminar
+                    </button>
+                </TemplateColumn>
+            </QuickGrid>
+            <p>
+                <strong>Cantidad:</strong>@ListaEstudiantes.Count
+            </p>
+        </div>
+    </div>
+</div>
+
+@code{
+    public List<RegistroLibro.Models.Estudiantes> ListaEstudiantes {get; set;} = new List<RegistroLibro.Models.Estudiantes>();
+
+    public string? filtro{get; set;}
+
+    public string? valorFiltro{get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaEstudiantes = await estudianteServices.ObtenerTodo();
+    }
+
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if(filtro =="Id" && int.TryParse(valorFiltro, out int estudianteId))
+            {
+                var estudinate = await estudianteServices.Buscar(estudianteId); 
+
+                if(estudinate != null)
+                {
+                    ListaEstudiantes =[estudinate];
+                }
+                else
+                {
+                    ListaEstudiantes= [];
+                }
+            }
+            else if(filtro == "Nombre")
+            {
+                ListaEstudiantes = (await estudianteServices.ObtenerTodo())
+                    .Where(l => l.Nombre.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+            else if(filtro == "Direccion")
+            {
+                ListaEstudiantes = (await estudianteServices.ObtenerTodo())
+                    .Where(l => l.Direccion.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+            else if(filtro == "Email")
+            {
+                ListaEstudiantes = (await estudianteServices.ObtenerTodo())
+                    .Where(l => l.Emil.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+            else if(filtro == "Fecha")
+            {
+                ListaEstudiantes = (await estudianteServices.ObtenerTodo())
+                    .OrderBy(l => l.Fecha)
+                    .ToList();
+            }
+            else
+            {
+                ListaEstudiantes = (await estudianteServices.ObtenerTodo())
+                    .Where(l =>
+                        l.Nombre.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.Direccion.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.Emil.ToLower().Contains(valorFiltro))
+                    .ToList();
+            }
+        }
+        else
+        {
+            ListaEstudiantes = await estudianteServices.ObtenerTodo();
+        }
+    }
+
+    private async Task Restablecer()
+    {
+        ListaEstudiantes = await estudianteServices.ObtenerTodo();
+        filtro = string.Empty;
+        valorFiltro = string.Empty;
+    }
+
+    public void MostrarPatallaCrear()
+    {
+        Navigation.NavigateTo("/Articulo/CrearEstudiantes");
+    }
+
+    public void MostrarPantallaEditar(int id)
+    {
+        Navigation.NavigateTo($"/editor-estudiante/{id}");
+    }
+
+    public void MostrarPantallaEliminar(int id)
+    {
+        Navigation.NavigateTo($"/editor-estudiante/{id}");
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\ArticulosPages\Libros.razor ==========
+
+@page "/libros"
+@rendermode InteractiveServer
+@inject GestionLibro GestionLibro
+@inject NavigationManager Navigation
+<PageTitle>Biblioteca</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Consulta de Libros</h5>
+            <a href="/crear-libro" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span>
+                Crear
+            </a>
+        </div>
+
+    @*Formulario*@
+    <div class="card-body">
+
+        @*Labels*@
+        <div class="row">
+
+            <div class="col-3">
+                <label class="form-label" for="Filtro">
+                    <strong>Filtrar por</strong>
+                </label>
+            </div>
+
+            <div class="col-4">
+                <label class="form-label" for="valorFiltro">
+                    <strong>Búsqueda</strong>
+                </label>
+            </div>
+
+        </div>
+
+        @*Inputs y botones*@
+        <div class="row">
+
+            @* Filtro *@
+            <div class="col-3">
+
+                <select class="form-select" @bind="filtro">
+
+                    <option value="">
+                        Elija una opción
+                    </option>
+
+                    <option value="Id">
+                        Id
+                    </option>
+
+                    <option value="Titulo">
+                        Título
+                    </option>
+
+                    <option value="Autor">
+                        Autor
+                    </option>
+
+                    <option value="AnoPublicacion">
+                        Año de Publicación
+                    </option>
+
+                </select>
+
+            </div>
+
+            @* Búsqueda *@
+            <div class="col-4">
+
+                <div class="input-group">
+                    <input class="form-control"
+                            @bind="valorFiltro"
+                            placeholder="Buscar" />
+
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            @onclick="Buscar">
+                        Buscar
+                    </button>
+                </div>
+            </div>
+
+            @*Restablecer*@
+            <div class="col-auto">
+
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        @onclick="Restablecer">
+                    Restablecer
+                </button>
+            </div>
+        </div>
+
+        <QuickGrid Items="ListaLibros.AsQueryable()"
+                    Class="table table-bordered mt-3 text-center">
+            <PropertyColumn Property="libro => libro.LibroId" Title="LibroId" Sortable="true" />
+            <PropertyColumn Property="libro => libro.Titulo" Title="Título" Sortable="true" />
+            <PropertyColumn Property="libro => libro.Autor" Title="Autor" Sortable="true" />
+            <PropertyColumn Property="libro => libro.AnoPublicacion" Title="Año de Publicación" Sortable="true" />
+            <TemplateColumn Title="Acciones">
+                <button type="button"
+                        class="btn btn-outline-warning"
+                        @onclick="() => MostrarPantallaEditar(context.LibroId)">
+                    Editar
+                </button>
+                <button type="button"
+                        class="btn btn-outline-danger"
+                        @onclick="() => MostrarPantallaEliminar(context.LibroId)">
+                    Eliminar
+                </button>
+            </TemplateColumn>
+        </QuickGrid>
+        <p>
+            <strong>Cantidad:</strong> @ListaLibros.Count
+        </p>
+    </div>
+</div>
+</div>
+
+@code
+{
+    public List<RegistroLibro.Models.Libros> ListaLibros { get; set; } = [];
+    public string? filtro { get; set; }
+    public string? valorFiltro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaLibros = await GestionLibro.ObtenerTodos();
+    }
+    private async Task Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(valorFiltro))
+        {
+            if (filtro == "Id" &&
+                int.TryParse(valorFiltro, out int libroId))
+            {
+                var libro = await GestionLibro.Buscar(libroId);
+                if (libro != null)
+                {
+                    ListaLibros = [libro];
+                }
+                else
+                {
+                    ListaLibros = [];
+                }
+            }
+            else if (filtro == "Titulo")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.Titulo.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+            else if (filtro == "Autor")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.Autor.ToLower()
+                    .Contains(valorFiltro.ToLower()))
+                    .ToList();
+            }
+            else if (filtro == "AnoPublicacion")
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l => l.AnoPublicacion.ToString()
+                    .Contains(valorFiltro))
+                    .ToList();
+            }
+            else
+            {
+                ListaLibros = (await GestionLibro.ObtenerTodos())
+                    .Where(l =>
+                        l.Titulo.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.Autor.ToLower().Contains(valorFiltro.ToLower()) ||
+                        l.AnoPublicacion.ToString().Contains(valorFiltro))
+                    .ToList();
+            }
+        }
+        else
+        {
+            ListaLibros = await GestionLibro.ObtenerTodos();
+        }
+    }
+
+    private async Task Restablecer()
+    {
+        ListaLibros = await GestionLibro.ObtenerTodos();
+        filtro = string.Empty;
+        valorFiltro = string.Empty;
+    }
+
+    public void MostrarPantallaCrear()
+    {
+        Navigation.NavigateTo("/crear-libro");
+    }
+
+    public void MostrarPantallaEditar(int id)
+    {
+        Navigation.NavigateTo($"/editar-libro/{id}");
+    }
+    public void MostrarPantallaEliminar(int id)
+    {
+        Navigation.NavigateTo($"/editar-libro/{id}");
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\PrestamosPages\CrearPrestamo.razor ==========
+
+@page "/Prestamo/Crear"
+
+@inject GestionLibro gestionLibro
+@inject EstudianteServices estudianteServices
+@inject PrestamosServices prestamosServices
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Crear Préstamo</PageTitle>
+
+<EditForm Model="prestamo" OnValidSubmit="Guardar">
+
+    <DataAnnotationsValidator />
+
+    <div class="container mt-4">
+
+        <div class="card shadow-lg">
+
+            @* Encabezado *@
+            <div class="card-header text-center">
+                <h3 class="mb-0">
+                    <strong>Crear Préstamo</strong>
+                </h3>
+            </div>
+
+            @* Cuerpo *@
+            <div class="card-body">
+
+                @* Mensaje de error *@
+                @if (!string.IsNullOrEmpty(mensaje))
+                {
+                    <div class="alert alert-danger">
+                        @mensaje
+                    </div>
+                }
+
+                @* Estudiante *@
+                <div class="mb-3">
+                    <label class="form-label">
+                        <strong>Estudiante</strong>
+                    </label>
+
+                    <InputSelect class="form-control form-select"
+                                @bind-Value="prestamo.EstudianteId">
+
+                        <option value="0">Elija una opción</option>
+
+                        @foreach (var estudiante in listaEstudiantes)
+                        {
+                            <option value="@estudiante.EstudianteId">
+                                @estudiante.Nombre
+                            </option>
+                        }
+
+                    </InputSelect>
+
+                    <ValidationMessage For="() => prestamo.EstudianteId" />
+                </div>
+
+
+                @*Libro*@
+                <div class="mb-3">
+                    <label class="form-label">
+                        <strong>Libro</strong>
+                    </label>
+
+                    <InputSelect class="form-control form-select"
+                                @bind-Value="prestamo.LibroId">
+
+                        <option value="0">Elija una opción</option>
+
+                        @foreach (var libro in listaLibros)
+                        {
+                            <option value="@libro.LibroId">
+                                @libro.Titulo
+                            </option>
+                        }
+
+                    </InputSelect>
+
+                    <ValidationMessage For="() => prestamo.LibroId" />
+                </div>
+
+
+                @*Fecha de préstamo*@
+                <div class="mb-3">
+                    <label class="form-label">
+                        <strong>Fecha de préstamo</strong>
+                    </label>
+
+                    <InputDate class="form-control"
+                                @bind-Value="prestamo.FechaPrestamo" />
+
+                    <ValidationMessage For="() => prestamo.FechaPrestamo" />
+                </div>
+
+
+                @*Fecha de devolución*@
+                <div class="mb-3">
+                    <label class="form-label">
+                        <strong>Fecha de devolución</strong>
+                    </label>
+
+                    <InputDate class="form-control"
+                                @bind-Value="prestamo.FechaDevolucion" />
+
+                    <ValidationMessage For="() => prestamo.FechaDevolucion" />
+                </div>
+
+
+            </div>
+
+
+            @*Footer*@
+            <div class="card-footer text-center">
+
+                <a href="/Prestamo/Index"
+                    class="btn btn-secondary me-2">
+
+                    <span class="bi bi-arrow-left"></span>
+                    Volver
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <span class="bi bi-floppy"></span>
+                    Guardar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</EditForm>
+
+
+@code
+{
+    public Prestamo prestamo { get; set; } = new Prestamo();
+
+    public List<Estudiantes> listaEstudiantes { get; set; } = new List<Estudiantes>();
+
+    public List<Libros> listaLibros { get; set; } = new List<Libros>();
+
+    private string mensaje = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaEstudiantes = await estudianteServices.GetList(e => e.EstudianteId > 0);
+
+        var prestamosActivos = await prestamosServices.GetList(p => p.Estado == "Prestado");
+        var librosPrestados = prestamosActivos.Select(p => p.LibroId).ToHashSet();
+        listaLibros = (await gestionLibro.ObtenerTodos())
+            .Where(libro => !librosPrestados.Contains(libro.LibroId))
+            .ToList();
+        prestamo.FechaPrestamo = DateTime.Now;
+        prestamo.Estado = "Prestado";
+    }
+
+
+    public async Task Guardar()
+    {
+        mensaje = "";
+
+        // Validar estudiante
+        if (prestamo.EstudianteId <= 0)
+        {
+            mensaje = "Debe seleccionar un estudiante.";
+            return;
+        }
+
+        if (prestamo.LibroId <= 0)
+        {
+            mensaje = "Debe seleccionar un libro.";
+            return;
+        }
+        if (await prestamosServices.EstaPrestado(prestamo.LibroId))
+        {
+            mensaje = "Este libro ya tiene un préstamo activo.";
+            return;
+        }
+        if (prestamo.FechaPrestamo > DateTime.Now)
+        {
+            mensaje = "La fecha de préstamo no puede ser mayor que la fecha actual.";
+            return;
+        }
+        if (prestamo.FechaDevolucion.HasValue &&
+            prestamo.FechaDevolucion.Value < prestamo.FechaPrestamo)
+        {
+            mensaje = "La fecha de devolución no puede ser menor que la fecha de préstamo.";
+            return;
+        }
+        try
+        {
+            var creado = await prestamosServices.Guardar(prestamo);
+
+            if (creado)
+            {
+                Navigation.NavigateTo("/Prestamo/Index");
+            }
+            else
+            {
+                mensaje = "No se pudo guardar el préstamo.";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensaje = "Error al guardar: " + ex.Message;
+
+            Console.WriteLine(ex.ToString());
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\PrestamosPages\EditarPrestamo.razor ==========
+
+@page "/Prestamo/Editar/{PrestamoId:int}"
+
+@inject NavigationManager Navigation
+@inject PrestamosServices prestamosServices
+@inject EstudianteServices estudianteServices
+@inject GestionLibro gestionLibro
+@rendermode InteractiveServer
+
+<PageTitle>Editar Prestamo</PageTitle>
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+
+        @*Header*@
+        <div class="card-header text-center">
+            <h3>
+                <strong>Editar Prestamo</strong>
+            </h3>
+        </div>
+
+        @*Body*@
+        <div class="card-body">
+            @if (!string.IsNullOrEmpty(mensaje))
+            {
+                <div class="alert alert-danger">
+                    @mensaje
+                </div>
+            }
+
+            @*PrestamoId*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>PrestamoId</strong>
+                </label>
+                <input type="text"
+                        class="form-control"
+                        @bind="prestamo.PrestamoId"
+                        disabled />
+            </div>
+
+            @*Estudiante*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Estudiante</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.EstudianteId">
+                        <option value="0">
+                            Elija una opcion
+                        </option>
+                    @foreach (var estudiante in listaEstudiante)
+                    {
+                        <option value="@estudiante.EstudianteId">
+                            @estudiante.Nombre
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            @*Libro*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Libro</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.LibroId">
+                    <option value="0">
+                        Elija una opcion
+                    </option>
+                    @foreach (var libro in listaLibros)
+                    {
+                        <option value="@libro.LibroId">
+                            @libro.Titulo
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            @*Fecha de prestamo*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Fecha de prestamo</strong>
+                </label>
+                <InputDate class="form-control"
+                            @bind-Value="prestamo.FechaPrestamo" />
+            </div>
+
+            @*Fecha de devolucion*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Fecha de devolucion</strong>
+                </label>
+                <InputDate class="form-control"
+                            @bind-Value="prestamo.FechaDevolucion" />
+            </div>
+
+            @*Estado*@
+            <div class="mb-3">
+                <label class="form-label">
+                    <strong>Estado</strong>
+                </label>
+                <InputSelect class="form-control form-select"
+                            @bind-Value="prestamo.Estado">
+
+                    <option value="">
+                        Elija una opcion
+                    </option>
+
+                    <option value="Prestado">
+                        Prestado
+                    </option>
+
+                    <option value="Devuelto">
+                        Devuelto
+                    </option>
+
+                </InputSelect>
+            </div>
+        </div>
+
+        @*Botones*@
+        <div class="card-footer">
+            <div class="d-flex justify-content-center gap-2">
+                <button type="button"
+                        class="btn btn-secondary"
+                        @onclick="Volver">
+                    <span class="bi bi-arrow-left"></span>
+                    Volver
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        @onclick="Modificar">
+                    <span class="bi bi-floppy"></span>
+                    Modificar
+                </button>
+                <button type="button"
+                        class="btn btn-danger"
+                        @onclick="MostrarConfirmacion">
+                    <span class="bi bi-trash"></span>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*Modal de confirmacion*@
+@if (mostrarConfirmacion)
+{
+    <div class="modal fade show d-block"
+        tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title">
+                        Confirmar Eliminar
+                    </h5>
+                </div>
+                <div class="modal-body text-center">
+                    <p>
+                        ¿Seguro de que desea eliminarlo?
+                    </p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            @onclick="CancelarEliminar">
+                        Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn btn-danger"
+                            @onclick="ConfirmarEliminar">
+                        Si, Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code
+{
+    [Parameter]
+    public int PrestamoId { get; set; }
+
+
+    private Prestamo prestamo = new Prestamo();
+
+    private List<Estudiantes> listaEstudiante = new List<Estudiantes>();
+
+    private List<Libros> listaLibros = new List<Libros>();
+
+    private string mensaje = "";
+
+    private bool mostrarConfirmacion = false;
+    protected override async Task OnInitializedAsync()
+    {
+        Prestamo? resultado =
+            await prestamosServices.Buscar(PrestamoId);
+
+        if (resultado != null)
+        {
+            prestamo = resultado;
+        }
+        else
+        {
+            mensaje = "El prestamo no existe.";
+        }
+        listaEstudiante =
+            await estudianteServices.GetList(e => e.EstudianteId > 0);
+        listaLibros = await gestionLibro.ObtenerTodos();
+    }
+
+    private async Task Modificar()
+    {
+        mensaje = "";
+
+        if (prestamo.EstudianteId <= 0)
+        {
+            mensaje = "El estudiante es obligatorio";
+            return;
+        }
+        if (prestamo.LibroId <= 0)
+        {
+            mensaje = "El libro es obligatorio";
+            return;
+        }
+        if (prestamo.FechaPrestamo > DateTime.Now)
+        {
+            mensaje = "La fecha de prestamo no puede ser mayor a la fecha actual";
+            return;
+        }
+
+        if (prestamo.FechaDevolucion.HasValue &&
+            prestamo.FechaDevolucion.Value < prestamo.FechaPrestamo)
+        {
+            mensaje = "La fecha de devolucion no puede ser menor que la fecha de prestamo";
+
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(prestamo.Estado))
+        {
+            mensaje = "Debe seleccionar un estado";
+            return;
+        }
+        bool resultado = await prestamosServices.Modificar(prestamo);
+        if (resultado)
+        {
+            Navigation.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            mensaje ="No se pudo modificar el prestamo";
+        }
+    }
+    private void MostrarConfirmacion()
+    {
+        mostrarConfirmacion = true;
+    }
+    private void CancelarEliminar()
+    {
+        mostrarConfirmacion = false;
+    }
+    private async Task ConfirmarEliminar()
+    {
+        mostrarConfirmacion = false;
+        bool resultado = await prestamosServices.Eliminar(PrestamoId);
+        if (resultado)
+        {
+            Navigation.NavigateTo("/Prestamo/Index");
+        }
+        else
+        {
+            mensaje = "No se pudo eliminar el prestamo";
+        }
+    }
+    private void Volver()
+    {
+        Navigation.NavigateTo("/Prestamo/Index");
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\PrestamosPages\Index.razor ==========
+
+@page "/Prestamo/Index"
+
+@inject PrestamosServices prestamosServices
+@inject EstudianteServices estudianteServices
+@inject GestionLibro gestionLibro
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Registro de Prestamo</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-lg">
+
+        @*Header*@
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Registro de Prestamos</h5>
+            <a href="/Prestamo/Crear" class="btn btn-primary">
+                <span class="bi bi-plus-square"></span>
+                Crear
+            </a>
+        </div>
+
+        <div class="card-body">
+            
+            @*Titulos*@
+            <div class="row">
+                <div class="col-3">
+                    <label class="form-label" for="Filtro">
+                        <strong>Filtrar por</strong>
+                    </label>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label" for="valorFiltro">
+                        <strong>Busqueda</strong>
+                    </label>
+                </div>
+            </div>
+
+            @*Filtros*@
+            <div class="row g-3">
+                @*Filtro*@
+                <div class="col-3">
+                    <select class="form-select" @bind="Filtro">
+
+                        <option value="">
+                            Elija una opcion
+                        </option>
+
+                        <option value="Estudiante">
+                            Estudiante
+                        </option>
+
+                        <option value="Libro">
+                            Libro
+                        </option>
+
+                    </select>
+                </div>
+                @*Busqueda*@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control"
+                                @bind="ValorFiltro"
+                                placeholder="Buscar" />
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                @onclick="Buscar">
+                            Buscar
+                        </button>
+                    </div>
+                </div>
+                @*Restablecer*@
+                <div class="col-auto">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            @onclick="Restablecer">
+                        Restablecer
+                    </button>
+                </div>
+            </div>
+            <QuickGrid Items="ListaPrestamos.AsQueryable()"
+                       Class="table table-bordered mt-3 text-center">
+                <PropertyColumn Property="prestamo => prestamo.PrestamoId" Title="PrestamoId" Sortable="true" />
+                <TemplateColumn Title="Estudiante" Sortable="true">
+                    @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == context.EstudianteId)?.Nombre ?? "No encontrado")
+                </TemplateColumn>
+                <TemplateColumn Title="Libro" Sortable="true">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
+                </TemplateColumn>
+                <TemplateColumn Title="Cantidad">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                </TemplateColumn>
+                <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
+                <TemplateColumn Title="Fecha devolución">
+                    @(context.FechaDevolucion?.ToShortDateString() ?? "-")
+                </TemplateColumn>
+                <PropertyColumn Property="prestamo => prestamo.Estado" Title="Estado" Sortable="true" />
+                <TemplateColumn Title="Acciones">
+                    <button type="button"
+                            class="btn btn-outline-warning"
+                            @onclick="() => MostrarPantallaEditar(context.PrestamoId)">
+                        Editar
+                    </button>
+                    
+                    @if (context.Estado == "Prestado")
+                    {
+                        <button type="button"
+                                class="btn btn-outline-success ms-1"
+                                @onclick="() => AbrirModalDevolucion(context)">
+                            Devolución
+                        </button>
+                    }
+                </TemplateColumn>
+            </QuickGrid>
+            <div class="d-flex flex-wrap gap-4 mt-3">
+                <p class="mb-0">
+                    <strong>Cantidad de préstamos:</strong> @ListaPrestamos.Count
+                </p>
+                <p class="mb-0">
+                    <strong>Promedio de días prestados:</strong> @PromedioDiasPrestados.ToString("0.0") días
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (mostrarModalDevolucion && prestamoSeleccionado != null)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Devolución</h5>
+                    <button type="button" class="btn-close" aria-label="Cerrar" @onclick="CerrarModalDevolucion"></button>
+                </div>
+                <div class="modal-body">
+                    @if (!string.IsNullOrWhiteSpace(mensajeDevolucion))
+                    {
+                        <div class="alert alert-danger">@mensajeDevolucion</div>
+                    }
+                    <p>
+                        <strong>Libro:</strong>
+                        @(ListaLibros.FirstOrDefault(libro => libro.LibroId == prestamoSeleccionado.LibroId)?.Titulo ?? "No encontrado")
+                    </p>
+                    <p>
+                        <strong>Estudiante:</strong>
+                        @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == prestamoSeleccionado.EstudianteId)?.Nombre ?? "No encontrado")
+                    </p>
+                    <div class="mb-3">
+                        <label class="form-label" for="fechaDevolucion"><strong>Fecha de devolución</strong></label>
+                        <InputDate id="fechaDevolucion" class="form-control" @bind-Value="fechaDevolucion" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModalDevolucion">Cancelar</button>
+                    <button type="button" class="btn btn-success" @onclick="ConfirmarDevolucion">Confirmar devolución</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@code
+{
+    public List<Prestamo> ListaPrestamos { get; set; } =
+            new List<Prestamo>();
+    public List<Estudiantes> ListaEstudiantes { get; set; } =
+            new List<Estudiantes>();
+    public List<Libros> ListaLibros { get; set; } =
+            new List<Libros>();
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+    private Prestamo? prestamoSeleccionado;
+    private DateTime fechaDevolucion = DateTime.Today;
+    private bool mostrarModalDevolucion;
+    private string mensajeDevolucion = string.Empty;
+    private double PromedioDiasPrestados => ListaPrestamos.Count == 0
+        ? 0
+        : ListaPrestamos.Average(prestamo =>
+            ((prestamo.FechaDevolucion ?? DateTime.Today).Date - prestamo.FechaPrestamo.Date).TotalDays);
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrestamos =
+                await prestamosServices.GetList(p => p.PrestamoId > 0);
+
+        ListaEstudiantes =
+                await estudianteServices.GetList(e => e.EstudianteId > 0);
+
+        ListaLibros =
+                await gestionLibro.ObtenerTodos();
+    }
+
+    private async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == "Estudiante")
+            {
+                var estudiantesEncontrados = ListaEstudiantes
+                    .Where(e => e.Nombre.Contains(
+                        ValorFiltro,
+                        StringComparison.OrdinalIgnoreCase))
+                        .Select(e => e.EstudianteId)
+                        .ToList();
+
+                ListaPrestamos = (await prestamosServices.ObtenerTodos())
+                    .Where(p => estudiantesEncontrados.Contains(p.EstudianteId))
+                    .ToList();
+            }
+
+            else if (Filtro == "Libro")
+            {
+                var librosEncontrados = ListaLibros
+                    .Where(l => l.Titulo.Contains(
+                        ValorFiltro,
+                        StringComparison.OrdinalIgnoreCase))
+                        .Select(l => l.LibroId)
+                        .ToList();
+
+                ListaPrestamos = (await prestamosServices.ObtenerTodos())
+                    .Where(p => librosEncontrados.Contains(p.LibroId))
+                    .ToList();
+            }
+            else
+            {
+                ListaPrestamos =
+                        await prestamosServices.ObtenerTodos();
+            }
+        }
+        else
+        {
+            ListaPrestamos =
+                        await prestamosServices.ObtenerTodos();
+        }
+    }
+    private async Task Restablecer()
+    {
+        ListaPrestamos =
+            await prestamosServices.ObtenerTodos();
+
+        Filtro = string.Empty;
+
+        ValorFiltro = string.Empty;
+    }
+    private void MostrarPantallaCrear()
+    {
+        Navigation.NavigateTo("/Prestamo/Crear");
+    }
+    private void MostrarPantallaEditar(int id)
+    {
+        Navigation.NavigateTo($"/Prestamo/Editar/{id}");
+    }
+    private void MostrarPantallaEliminar(int id)
+    {
+        Navigation.NavigateTo($"/Prestamo/Editar/{id}");
+    }
+
+    private void AbrirModalDevolucion(Prestamo prestamo)
+    {
+        prestamoSeleccionado = prestamo;
+        fechaDevolucion = DateTime.Today;
+        mensajeDevolucion = string.Empty;
+        mostrarModalDevolucion = true;
+    }
+
+    private void CerrarModalDevolucion()
+    {
+        mostrarModalDevolucion = false;
+        prestamoSeleccionado = null;
+        mensajeDevolucion = string.Empty;
+    }
+
+    private async Task ConfirmarDevolucion()
+    {
+        if (prestamoSeleccionado == null)
+        {
+            return;
+        }
+
+        var resultado = await prestamosServices.RegistrarDevolucion(
+            prestamoSeleccionado.PrestamoId,
+            prestamoSeleccionado.EstudianteId,
+            fechaDevolucion);
+
+        if (resultado.IsFailure)
+        {
+            mensajeDevolucion = resultado.Error.Description;
+            return;
+        }
+
+        prestamoSeleccionado.Estado = "Devuelto";
+        prestamoSeleccionado.FechaDevolucion = fechaDevolucion;
+        CerrarModalDevolucion();
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Components\Pages\PrestamosPages\PrestamosDevueltos.razor ==========
+
+@page "/Prestamo/Devueltos"
+
+@inject PrestamosServices prestamosServices
+@inject EstudianteServices estudianteServices
+@inject GestionLibro gestionLibro
+@rendermode InteractiveServer
+
+<PageTitle>Préstamos devueltos</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Préstamos devueltos</h5>
+            <a href="/Prestamo/Index" class="btn btn-outline-secondary">
+                <span class="bi bi-arrow-left"></span>
+                Volver a préstamos
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (!string.IsNullOrWhiteSpace(mensaje))
+            {
+                <div class="alert alert-danger">@mensaje</div>
+            }
+
+            <QuickGrid Items="ListaPrestamos.AsQueryable()"
+                       Class="table table-bordered mt-2 text-center">
+                <PropertyColumn Property="prestamo => prestamo.PrestamoId" Title="Préstamo" Sortable="true" />
+                <TemplateColumn Title="Estudiante">
+                    @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == context.EstudianteId)?.Nombre ?? "No encontrado")
+                </TemplateColumn>
+                <TemplateColumn Title="Libro">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
+                </TemplateColumn>
+                <TemplateColumn Title="Cantidad">
+                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                </TemplateColumn>
+                <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
+                <TemplateColumn Title="Fecha devolución" Sortable="true">
+                    @(context.FechaDevolucion?.ToShortDateString() ?? "-")
+                </TemplateColumn>
+            </QuickGrid>
+
+            <p class="mt-3 mb-0">
+                <strong>Total devueltos:</strong> @ListaPrestamos.Count
+            </p>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private List<Prestamo> ListaPrestamos { get; set; } = [];
+    private List<Estudiantes> ListaEstudiantes { get; set; } = [];
+    private List<Libros> ListaLibros { get; set; } = [];
+    private string mensaje = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPrestamos = await prestamosServices.GetList(prestamo => prestamo.Estado == "Devuelto");
+        ListaEstudiantes = await estudianteServices.GetList(estudiante => estudiante.EstudianteId > 0);
+        ListaLibros = await gestionLibro.ObtenerTodos();
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Context\Contexto.cs ==========
+
+using Microsoft.EntityFrameworkCore;
+using RegistroLibro.Models;
+
+namespace RegistroLibro.Context;
+public class Contexto : DbContext
+{
+    public Contexto(DbContextOptions<Contexto> options) : base(options) { }
+    public DbSet<Libros> Libros { get; set; }
+    public DbSet<Estudiantes> Estudiantes{get; set;}
+    public DbSet<Prestamo> Prestamos{get; set;}
+
+    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Prestamo>()
+            .HasIndex(prestamo => prestamo.LibroId)
+            .IsUnique()
+            .HasFilter("[Estado] = N'Prestado'");
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260919221346_Initial.cs ==========
+
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class Initial : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Libros",
+                columns: table => new
+                {
+                    LibroId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Autor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AnoPublicacion = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Libros", x => x.LibroId);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Libros");
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260919221346_Initial.Designer.cs ==========
+
+// <auto-generated />
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20260919221346_Initial")]
+    partial class Initial
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260920180922_AgregarEstudiantes.cs ==========
+
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class AgregarEstudiantes : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Estudiantes",
+                columns: table => new
+                {
+                    EstudianteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Emil = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Estudiantes", x => x.EstudianteId);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Estudiantes");
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260920180922_AgregarEstudiantes.Designer.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20260920180922_AgregarEstudiantes")]
+    partial class AgregarEstudiantes
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260927154120_CrearPrestamos.cs ==========
+
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class CrearPrestamos : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Prestamos",
+                columns: table => new
+                {
+                    PrestamoId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EstudianteId = table.Column<int>(type: "int", nullable: false),
+                    LibroId = table.Column<int>(type: "int", nullable: false),
+                    FechaPrestamo = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaDevolucion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prestamos", x => x.PrestamoId);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Prestamos");
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260927154120_CrearPrestamos.Designer.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20260927154120_CrearPrestamos")]
+    partial class CrearPrestamos
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.ToTable("Prestamos");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260927214208_MigracionAzure.cs ==========
+
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class MigracionAzure : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "FechaDevolucion",
+                table: "Prestamos",
+                type: "datetime2",
+                nullable: true,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "FechaDevolucion",
+                table: "Prestamos",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2",
+                oldNullable: true);
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20260927214208_MigracionAzure.Designer.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20260927214208_MigracionAzure")]
+    partial class MigracionAzure
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.ToTable("Prestamos");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20261011180130_UnLibroPrestadoPorLibro.cs ==========
+
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class UnLibroPrestadoPorLibro : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateIndex(
+                name: "IX_Prestamos_LibroId",
+                table: "Prestamos",
+                column: "LibroId",
+                unique: true,
+                filter: "[Estado] = N'Prestado'");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropIndex(
+                name: "IX_Prestamos_LibroId",
+                table: "Prestamos");
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20261011180130_UnLibroPrestadoPorLibro.Designer.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20261011180130_UnLibroPrestadoPorLibro")]
+    partial class UnLibroPrestadoPorLibro
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.HasIndex("LibroId")
+                        .IsUnique()
+                        .HasFilter("[Estado] = N'Prestado'");
+
+                    b.ToTable("Prestamos");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20261011215007_AgregarCantidadALibros.cs ==========
+
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    /// <inheritdoc />
+    public partial class AgregarCantidadALibros : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AddColumn<int>(
+                name: "Cantidad",
+                table: "Libros",
+                type: "int",
+                nullable: false,
+                defaultValue: 1);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prestamos_EstudianteId",
+                table: "Prestamos",
+                column: "EstudianteId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Prestamos_Estudiantes_EstudianteId",
+                table: "Prestamos",
+                column: "EstudianteId",
+                principalTable: "Estudiantes",
+                principalColumn: "EstudianteId",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Prestamos_Libros_LibroId",
+                table: "Prestamos",
+                column: "LibroId",
+                principalTable: "Libros",
+                principalColumn: "LibroId",
+                onDelete: ReferentialAction.Cascade);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Prestamos_Estudiantes_EstudianteId",
+                table: "Prestamos");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Prestamos_Libros_LibroId",
+                table: "Prestamos");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Prestamos_EstudianteId",
+                table: "Prestamos");
+
+            migrationBuilder.DropColumn(
+                name: "Cantidad",
+                table: "Libros");
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\20261011215007_AgregarCantidadALibros.Designer.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    [Migration("20261011215007_AgregarCantidadALibros")]
+    partial class AgregarCantidadALibros
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.HasIndex("EstudianteId");
+
+                    b.HasIndex("LibroId")
+                        .IsUnique()
+                        .HasFilter("[Estado] = N'Prestado'");
+
+                    b.ToTable("Prestamos");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.HasOne("RegistroLibro.Models.Estudiantes", "Estudiante")
+                        .WithMany()
+                        .HasForeignKey("EstudianteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RegistroLibro.Models.Libros", "Libro")
+                        .WithMany()
+                        .HasForeignKey("LibroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estudiante");
+
+                    b.Navigation("Libro");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Migrations\ContextoModelSnapshot.cs ==========
+
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using RegistroLibro.Context;
+
+#nullable disable
+
+namespace RegistroLibro.Migrations
+{
+    [DbContext(typeof(Contexto))]
+    partial class ContextoModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RegistroLibro.Models.Estudiantes", b =>
+                {
+                    b.Property<int>("EstudianteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EstudianteId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Emil")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EstudianteId");
+
+                    b.ToTable("Estudiantes");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Libros", b =>
+                {
+                    b.Property<int>("LibroId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LibroId"));
+
+                    b.Property<int>("AnoPublicacion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Autor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LibroId");
+
+                    b.ToTable("Libros");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.Property<int>("PrestamoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrestamoId"));
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("FechaDevolucion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPrestamo")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LibroId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PrestamoId");
+
+                    b.HasIndex("EstudianteId");
+
+                    b.HasIndex("LibroId")
+                        .IsUnique()
+                        .HasFilter("[Estado] = N'Prestado'");
+
+                    b.ToTable("Prestamos");
+                });
+
+            modelBuilder.Entity("RegistroLibro.Models.Prestamo", b =>
+                {
+                    b.HasOne("RegistroLibro.Models.Estudiantes", "Estudiante")
+                        .WithMany()
+                        .HasForeignKey("EstudianteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RegistroLibro.Models.Libros", "Libro")
+                        .WithMany()
+                        .HasForeignKey("LibroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Estudiante");
+
+                    b.Navigation("Libro");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Models\Estudiantes.cs ==========
+
+using System.ComponentModel.DataAnnotations;
+
+namespace RegistroLibro.Models;
+
+public class Estudiantes
+{
+    [Key]
+    public int EstudianteId { get; set; }
+    [Required(ErrorMessage ="El nombre es invalido")]
+    public string? Nombre { get; set; } = string.Empty;
+    [Required(ErrorMessage ="Direccion invalida")]
+    public string? Direccion { get; set; } = string.Empty;
+    [Required(ErrorMessage ="Email esta incorrecto")]
+    public string? Emil { get; set; } = string.Empty;
+    [Required(ErrorMessage ="La fecha es invalida")]
+    public DateTime Fecha{get; set;}
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Models\Jugadores.cs ==========
+
+using System.ComponentModel.DataAnnotations;
+
+namespace Jugador.Model;
+public class Jugadores
+{
+    [Key]
+    public int JugadorId { get; set; }
+    [Required(ErrorMessage ="Este campo es invalido")]
+    public string Jugador { get; set; } = string.Empty;
+    [Required(ErrorMessage ="Este campo es invalido")]
+    public int PuntosJugador { get; set; }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Models\Libros.cs ==========
+
+using System.ComponentModel.DataAnnotations;
+
+namespace RegistroLibro.Models;
+
+public class Libros
+{
+    [Key]
+    public int LibroId { get; set; }
+    [Required(ErrorMessage ="Este campo esta vacio")]
+    public string Titulo { get; set; } = string.Empty;
+    [Required(ErrorMessage ="El campo autor esta vacio")]
+    public string Autor { get; set; } = string.Empty;
+    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
+    public int AnoPublicacion { get; set; }
+    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
+    public int Cantidad { get; set; }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Models\Partida.cs ==========
+
+namespace Partida.Models;
+
+public class Partida
+{
+    public int PartidadId { get; set; }
+ 
+    public int Punto { get; set; }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Models\Prestamo.cs ==========
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RegistroLibro.Models;
+
+public partial class Prestamo
+{
+    [Key]
+    public int PrestamoId { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un estudiante válido")]
+    public int EstudianteId { get; set; }
+
+    [ForeignKey(nameof(EstudianteId))]
+    public virtual Estudiantes? Estudiante { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
+    public int LibroId { get; set; }
+
+    [ForeignKey(nameof(LibroId))]
+    public virtual Libros? Libro { get; set; }
+
+    [Required(ErrorMessage = "Este campo es obligatorio")]
+    public DateTime FechaPrestamo { get; set; }
+
+    public DateTime? FechaDevolucion { get; set; }
+
+    [Required(ErrorMessage = "Este campo es obligatorio")]
+    public string Estado { get; set; } = string.Empty;
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Properties\launchSettings.json ==========
+
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+    "profiles": {
+      "http": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "applicationUrl": "http://localhost:5205",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      },
+      "https": {
+        "commandName": "Project",
+        "dotnetRunMessages": true,
+        "launchBrowser": true,
+        "applicationUrl": "https://localhost:7023;http://localhost:5205",
+        "environmentVariables": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        }
+      }
+    }
+  }
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Services\EstudiantesServices.cs ==========
+
+using RegistroLibro.Models;
+using RegistroLibro.Context;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+public class EstudianteServices(IDbContextFactory<Contexto> DbFactory)
+{
+    public async Task<bool> Existe(int estudianteId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Estudiantes.AnyAsync(l => l.EstudianteId == estudianteId);
+    }
+
+    public async Task<bool> Guardar(Estudiantes estudiante)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        contexto.Estudiantes.Add(estudiante);
+        return await contexto.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> Modificar(Estudiantes estudiante)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        contexto.Estudiantes.Update(estudiante);
+        return await contexto.SaveChangesAsync() > 0;
+    }
+
+    public async Task<Estudiantes?> Buscar(int estudianteId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Estudiantes.FirstOrDefaultAsync(l => l.EstudianteId == estudianteId);
+    }
+
+    public async Task<bool> Eliminar(int estudianteId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Estudiantes.AsNoTracking().Where(p => p.EstudianteId == estudianteId).ExecuteDeleteAsync() > 0;
+    }
+
+    public async Task<List<Estudiantes>> GetList(Expression<Func<Estudiantes, bool>> criterio)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+    
+        return await contexto.Estudiantes
+            .Where(criterio)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<List<Estudiantes>> ObtenerTodo()
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Estudiantes.AsNoTracking().ToListAsync();
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Services\GestionLibro.cs ==========
+
+using RegistroLibro.Models;
+using RegistroLibro.Context;
+using Microsoft.EntityFrameworkCore;
+
+public class GestionLibro(IDbContextFactory<Contexto> DbFactory)
+{
+    public async Task<bool> Existe(int libroId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Libros.AnyAsync(l => l.LibroId == libroId);
+    }
+
+    public async Task<bool> Guardar(Libros libro)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        contexto.Libros.Add(libro);
+        return await contexto.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> Modificar(Libros libro)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        contexto.Update(libro);
+        return await contexto.SaveChangesAsync() > 0;
+    }
+
+    public async Task<Libros?> Buscar(int libroId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Libros
+            .FirstOrDefaultAsync(p => p.LibroId == libroId);
+    }
+
+    public async Task<bool> Eliminar(int libroId)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Libros.AsNoTracking()
+            .Where(p => p.LibroId == libroId).ExecuteDeleteAsync() > 0;
+    }
+
+    public async Task<List<Libros>> ObtenerTodos()
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Libros
+            .AsNoTracking().ToListAsync();
+    }
+}
+
+
+========== C:\Aplicada 1\RegistroLibro\RegistroLibro\RegistroLibro\Services\PrestamosServices.cs ==========
+
+using System.Linq.Expressions;
+using Aplicada1.Core;
+using Microsoft.EntityFrameworkCore;
+using RegistroLibro.Context;
+using RegistroLibro.Models;
+
+public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
+    : IServiceResult<Prestamo, int>
+{
+    public async Task<bool> Guardar(Prestamo prestamo)
+    {
+        if (prestamo.EstudianteId <= 0 || prestamo.LibroId <= 0)
+        {
+            return false;
+        }
+
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        if (await contexto.Prestamos.AnyAsync(p =>
+                p.LibroId == prestamo.LibroId && p.Estado == "Prestado"))
+        {
+            return false;
+        }
+
+        contexto.Prestamos.Add(prestamo);
+        try
+        {
+            return await contexto.SaveChangesAsync() > 0;
+        }
+        catch (DbUpdateException)
+        {
+            return false;
+        }
+    }
+
+    async Task<Result> IServiceResult<Prestamo, int>.Guardar(Prestamo entidad)
+    {
+        return await Guardar(entidad)
+            ? Result.Success()
+            : Result.Failure(new Error("SAVE_FAILED", "No se pudo guardar el préstamo; verifique que el libro no esté prestado."));
+    }
+
+    public async Task<bool> EstaPrestado(int libroId)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos.AnyAsync(p =>
+            p.LibroId == libroId && p.Estado == "Prestado");
+    }
+
+    public async Task<Result> RegistrarDevolucion(int prestamoId, int estudianteId, DateTime fechaDevolucion)
+    {
+        if (prestamoId <= 0 || estudianteId <= 0)
+        {
+            return Result.Failure(new Error("VALIDATION", "El préstamo y el estudiante son obligatorios."));
+        }
+        if (fechaDevolucion == default || fechaDevolucion.Date > DateTime.Today)
+        {
+            return Result.Failure(new Error("INVALID_RETURN_DATE", "La fecha de devolución no es válida."));
+        }
+
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        var prestamo = await contexto.Prestamos.FirstOrDefaultAsync(p =>
+            p.PrestamoId == prestamoId &&
+            p.EstudianteId == estudianteId &&
+            p.Estado == "Prestado");
+
+        if (prestamo == null)
+        {
+            return Result.Failure(new Error("LOAN_NOT_FOUND", "No existe un préstamo activo para ese estudiante."));
+        }
+        if (fechaDevolucion.Date < prestamo.FechaPrestamo.Date)
+        {
+            return Result.Failure(new Error("INVALID_RETURN_DATE", "La fecha de devolución no puede ser anterior a la fecha del préstamo."));
+        }
+
+        prestamo.Estado = "Devuelto";
+        prestamo.FechaDevolucion = fechaDevolucion;
+        try
+        {
+            await contexto.SaveChangesAsync();
+            return Result.Success();
+        }
+        catch (DbUpdateException)
+        {
+            return Result.Failure(new Error("RETURN_FAILED", "No se pudo registrar la devolución."));
+        }
+    }
+
+    public async Task<Prestamo?> Buscar(int prestamoId)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
+    }
+
+    async Task<Result<Prestamo?>> IServiceResult<Prestamo, int>.Buscar(int id)
+    {
+        var prestamo = await Buscar(id);
+        return prestamo is null
+            ? Result.Failure<Prestamo?>(new Error("LOAN_NOT_FOUND", "El préstamo no existe."))
+            : Result.Success<Prestamo?>(prestamo);
+    }
+
+    public async Task<bool> Modificar(Prestamo prestamo)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        if (prestamo.Estado == "Prestado" && await contexto.Prestamos.AnyAsync(p =>
+                p.LibroId == prestamo.LibroId &&
+                p.Estado == "Prestado" &&
+                p.PrestamoId != prestamo.PrestamoId))
+        {
+            return false;
+        }
+
+        contexto.Prestamos.Update(prestamo);
+        try
+        {
+            return await contexto.SaveChangesAsync() > 0;
+        }
+        catch (DbUpdateException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> Eliminar(int prestamoId)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos.AsNoTracking()
+            .Where(p => p.PrestamoId == prestamoId)
+            .ExecuteDeleteAsync() > 0;
+    }
+
+    async Task<Result> IServiceResult<Prestamo, int>.Eliminar(int id)
+    {
+        return await Eliminar(id)
+            ? Result.Success()
+            : Result.Failure(new Error("LOAN_NOT_FOUND", "El préstamo no existe."));
+    }
+
+    public async Task<List<Prestamo>> GetList(Expression<Func<Prestamo, bool>> criterio)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos
+            .Where(criterio)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    async Task<Result<List<Prestamo>>> IServiceResult<Prestamo, int>.GetList(
+        Expression<Func<Prestamo, bool>> criterio)
+    {
+        return Result.Success(await GetList(criterio));
+    }
+
+    public async Task<List<Prestamo>> GetPrestamosPendientes(int estudianteId)
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos
+            .Where(p => p.EstudianteId == estudianteId && p.Estado == "Prestado")
+            .OrderBy(p => p.PrestamoId)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<List<Prestamo>> ObtenerTodos()
+    {
+        await using var contexto = await contextFactory.CreateDbContextAsync();
+        return await contexto.Prestamos.AsNoTracking().ToListAsync();
+    }
+}

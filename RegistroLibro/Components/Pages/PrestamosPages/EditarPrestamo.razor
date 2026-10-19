@@ -1,283 +1,307 @@
-@page "/Prestamo/Editar/{PrestamoId:int}"
-
+﻿@page "/Prestamo/Editar/{PrestamoId:int}"
 @inject NavigationManager Navigation
 @inject PrestamosServices prestamosServices
 @inject EstudianteServices estudianteServices
 @inject GestionLibro gestionLibro
 @rendermode InteractiveServer
 
-<PageTitle>Editar Prestamo</PageTitle>
-
-<div class="container mt-4">
-    <div class="card shadow-lg">
-
-        @*Header*@
-        <div class="card-header text-center">
-            <h3>
-                <strong>Editar Prestamo</strong>
-            </h3>
+<PageTitle>Editar préstamo</PageTitle>
+<div class="container-fluid mt-4 px-3 px-lg-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">
+                Editar préstamo
+            </h4>
         </div>
-
-        @*Body*@
         <div class="card-body">
-            @if (!string.IsNullOrEmpty(mensaje))
-            {
+            @if (!string.IsNullOrWhiteSpace(mensaje)) { 
                 <div class="alert alert-danger">
                     @mensaje
-                </div>
+                </div> 
             }
-
-            @*PrestamoId*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>PrestamoId</strong>
-                </label>
-                <input type="text"
-                        class="form-control"
-                        @bind="prestamo.PrestamoId"
-                        disabled />
-            </div>
-
-            @*Estudiante*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>Estudiante</strong>
-                </label>
-                <InputSelect class="form-control form-select"
-                            @bind-Value="prestamo.EstudianteId">
-                        <option value="0">
-                            Elija una opcion
-                        </option>
-                    @foreach (var estudiante in listaEstudiante)
-                    {
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">
+                        Préstamo Id
+                    </label>
+                    <input class="form-control" 
+                            value="@PrestamoId" 
+                            disabled />
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label">
+                        Estudiante
+                    </label>
+                    <select class="form-select" 
+                            @bind="prestamo.EstudianteId">
+                            <option value="0">
+                        Seleccione un estudiante
+                    </option>
+                    @foreach (var estudiante in listaEstudiantes) { 
                         <option value="@estudiante.EstudianteId">
                             @estudiante.Nombre
-                        </option>
+                        </option> 
                     }
-                </InputSelect>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Fecha del préstamo
+                    </label>
+                    <input type="date" 
+                            class="form-control" 
+                            @bind="fechaPrestamo" /></div>
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Fecha de devolución
+                    </label>
+                    <input type="date" 
+                            class="form-control" 
+                            @bind="fechaDevolucion" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Estado
+                    </label>
+                    <select class="form-select" 
+                            @bind="prestamo.Estado">
+                            <option value="Prestado">
+                                Prestado
+                            </option>
+                            <option value="Devuelto">
+                                Devuelto
+                            </option>
+                    </select>
+                </div>
             </div>
 
-            @*Libro*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>Libro</strong>
-                </label>
-                <InputSelect class="form-control form-select"
-                            @bind-Value="prestamo.LibroId">
-                    <option value="0">
-                        Elija una opcion
-                    </option>
-                    @foreach (var libro in listaLibros)
-                    {
-                        <option value="@libro.LibroId">
-                            @libro.Titulo
-                        </option>
-                    }
-                </InputSelect>
-            </div>
-
-            @*Fecha de prestamo*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>Fecha de prestamo</strong>
-                </label>
-                <InputDate class="form-control"
-                            @bind-Value="prestamo.FechaPrestamo" />
-            </div>
-
-            @*Fecha de devolucion*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>Fecha de devolucion</strong>
-                </label>
-                <InputDate class="form-control"
-                            @bind-Value="prestamo.FechaDevolucion" />
-            </div>
-
-            @*Estado*@
-            <div class="mb-3">
-                <label class="form-label">
-                    <strong>Estado</strong>
-                </label>
-                <InputSelect class="form-control form-select"
-                            @bind-Value="prestamo.Estado">
-
-                    <option value="">
-                        Elija una opcion
-                    </option>
-
-                    <option value="Prestado">
-                        Prestado
-                    </option>
-
-                    <option value="Devuelto">
-                        Devuelto
-                    </option>
-
-                </InputSelect>
-            </div>
+            <section class="mt-4 border rounded">
+                <h5 class="px-3 py-2 border-bottom bg-light mb-0">
+                    Libros del préstamo
+                </h5>
+                <div class="p-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label class="form-label">
+                                Agregar otro libro
+                            </label>
+                            <select class="form-select" 
+                                    @bind="libroSeleccionadoId">
+                                    <option value="0">
+                                        Seleccione un libro
+                                    </option>
+                                    @foreach (var libro in listaLibros) { 
+                                        <option value="@libro.LibroId">
+                                                        @libro.Titulo 
+                                                        — disponibles ahora: 
+                                                        @DisponiblesParaPrestamo(libro.LibroId)
+                                        </option> 
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">
+                                Cantidad
+                            </label>
+                            <input type="number"
+                                    min="1" 
+                                    class="form-control" 
+                                    @bind="cantidadSeleccionada" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" 
+                                    @onclick="AgregarLibro">
+                                Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-striped align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Libro</th>
+                                    <th>Disponibles al guardar</th>
+                                    <th>Cantidad prestada</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in prestamo.Detalles)
+                                {
+                                    var libro = listaLibros.FirstOrDefault(l => l.LibroId == detalle.LibroId);
+                                    <tr>
+                                        <td>@(libro?.Titulo ?? "Libro no encontrado")</td>
+                                        <td>@DisponiblesParaPrestamo(detalle.LibroId)</td>
+                                        <td><input type="number" 
+                                                    min="1" 
+                                                    class="form-control" 
+                                                    @bind="detalle.Cantidad" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-danger" 
+                                                    @onclick="() => prestamo.Detalles.Remove(detalle)">
+                                                Quitar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (prestamo.Detalles.Count == 0) { 
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">
+                                            Agregue al menos un libro.
+                                        </td>
+                                    </tr> }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </div>
-
-        @*Botones*@
-        <div class="card-footer">
-            <div class="d-flex justify-content-center gap-2">
-                <button type="button"
-                        class="btn btn-secondary"
-                        @onclick="Volver">
-                    <span class="bi bi-arrow-left"></span>
-                    Volver
-                </button>
-                <button type="button"
-                        class="btn btn-primary"
-                        @onclick="Modificar">
-                    <span class="bi bi-floppy"></span>
-                    Modificar
-                </button>
-                <button type="button"
-                        class="btn btn-danger"
-                        @onclick="MostrarConfirmacion">
-                    <span class="bi bi-trash"></span>
-                    Eliminar
-                </button>
-            </div>
+        <div class="card-footer bg-light d-flex justify-content-center flex-wrap gap-2">
+            <button class="btn btn-outline-secondary" 
+                    @onclick="Volver">
+                Volver
+            </button>
+            <button class="btn btn-outline-primary" 
+                    @onclick="Nuevo">
+                Nuevo
+            </button>
+            <button class="btn btn-success" 
+                    @onclick="Modificar">
+                Guardar cambios
+            </button>
+            <button class="btn btn-outline-danger" 
+                    @onclick="MostrarConfirmacion">
+                Eliminar
+            </button>
         </div>
     </div>
 </div>
-
-@*Modal de confirmacion*@
 @if (mostrarConfirmacion)
 {
-    <div class="modal fade show d-block"
-        tabindex="-1">
+    <div class="modal fade show d-block" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header justify-content-center">
-                    <h5 class="modal-title">
-                        Confirmar Eliminar
-                    </h5>
-                </div>
-                <div class="modal-body text-center">
-                    <p>
-                        ¿Seguro de que desea eliminarlo?
-                    </p>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button"
-                            class="btn btn-secondary"
-                            @onclick="CancelarEliminar">
-                        Cancelar
-                    </button>
-                    <button type="button"
-                            class="btn btn-danger"
-                            @onclick="ConfirmarEliminar">
-                        Si, Eliminar
-                    </button>
-                </div>
-            </div>
+        <div class="modal-header">
+            <h5>Confirmar eliminación</h5>
+        </div>
+        <div class="modal-body">
+            ¿Eliminar este prestamo? Si esta activo, sus unidades regresaran al inventario.
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" 
+                    @onclick="() => mostrarConfirmacion = false">
+                Cancelar
+            </button>
+            <button class="btn btn-danger" 
+                    @onclick="ConfirmarEliminar">
+                Eliminar
+            </button>
         </div>
     </div>
-    <div class="modal-backdrop fade show"></div>
+</div>
+</div><div class="modal-backdrop fade show"></div>
 }
 
+@code {
+    [Parameter] public int PrestamoId { get; set; }
+    private Prestamo prestamo = new();
+    private List<Estudiantes> listaEstudiantes = [];
+    private List<Libros> listaLibros = [];
+    private Dictionary<int, int> cantidadesOriginales = [];
+    private string estadoOriginal = string.Empty;
+    private int libroSeleccionadoId;
+    private int cantidadSeleccionada = 1;
+    private string mensaje = string.Empty;
+    private DateTime fechaPrestamo = DateTime.Today;
+    private DateTime? fechaDevolucion;
+    private bool mostrarConfirmacion;
 
-@code
-{
-    [Parameter]
-    public int PrestamoId { get; set; }
-
-
-    private Prestamo prestamo = new Prestamo();
-
-    private List<Estudiantes> listaEstudiante = new List<Estudiantes>();
-
-    private List<Libros> listaLibros = new List<Libros>();
-
-    private string mensaje = "";
-
-    private bool mostrarConfirmacion = false;
     protected override async Task OnInitializedAsync()
     {
-        Prestamo? resultado =
-            await prestamosServices.Buscar(PrestamoId);
-
-        if (resultado != null)
-        {
-            prestamo = resultado;
+        var resultado = await prestamosServices.Buscar(PrestamoId);
+        if (resultado is null) { 
+            mensaje = "El préstamo no existe."; 
+            return;
         }
-        else
-        {
-            mensaje = "El prestamo no existe.";
-        }
-        listaEstudiante =
-            await estudianteServices.GetList(e => e.EstudianteId > 0);
+        prestamo = resultado;
+        estadoOriginal = prestamo.Estado;
+        listaEstudiantes = await estudianteServices.GetList(e => e.EstudianteId > 0);
         listaLibros = await gestionLibro.ObtenerTodos();
+        fechaPrestamo = prestamo.FechaPrestamo;
+        fechaDevolucion = prestamo.FechaDevolucion;
+        if (prestamo.Detalles.Count == 0 && prestamo.LibroId > 0) {
+            prestamo.Detalles.Add(new PrestamoDetalle {
+                LibroId = prestamo.LibroId, Cantidad = 1 
+                });
+            cantidadesOriginales = prestamo.Detalles
+            .GroupBy(d => d.LibroId)
+            .ToDictionary(g => g.Key, g => g.Sum(d => d.Cantidad));
+        }
+    }
+
+    private int DisponiblesParaPrestamo(int libroId)
+    {
+        var cantidadActual = listaLibros.FirstOrDefault(l => l.LibroId == libroId)?.Cantidad ?? 0;
+        var enEdicion = prestamo.Detalles.Where(d => d.LibroId == libroId).Sum(d => d.Cantidad);
+        var porDevolver = estadoOriginal == "Prestado" ? cantidadesOriginales.GetValueOrDefault(libroId) : 0;
+        var porPrestar = prestamo.Estado == "Prestado" ? enEdicion : 0;
+        return Math.Max(0, cantidadActual + porDevolver - porPrestar);
+    }
+
+    private void AgregarLibro()
+    {
+        mensaje = string.Empty;
+        if (libroSeleccionadoId <= 0 || cantidadSeleccionada <= 0) { 
+            mensaje = "Seleccione un libro y una cantidad válida."; 
+            return; 
+        }
+        if (cantidadSeleccionada > DisponiblesParaPrestamo(libroSeleccionadoId)) { 
+            mensaje = "La cantidad supera las unidades disponibles."; 
+            return; 
+        }
+        var detalle = prestamo.Detalles.FirstOrDefault(d => d.LibroId == libroSeleccionadoId);
+        if (detalle is null) prestamo.Detalles.Add(new PrestamoDetalle { 
+            LibroId = libroSeleccionadoId, Cantidad = cantidadSeleccionada 
+        });
+        else detalle.Cantidad += cantidadSeleccionada;
+        libroSeleccionadoId = 0;
+        cantidadSeleccionada = 1;
     }
 
     private async Task Modificar()
     {
-        mensaje = "";
-
-        if (prestamo.EstudianteId <= 0)
-        {
-            mensaje = "El estudiante es obligatorio";
-            return;
+        mensaje = string.Empty;
+        if (prestamo.EstudianteId <= 0 || prestamo.Detalles.Count == 0 || prestamo.Detalles.Any(d => d.Cantidad <= 0)) { 
+            mensaje = "Seleccione un estudiante y agregue libros con cantidades válidas."; 
+            return; 
         }
-        if (prestamo.LibroId <= 0)
-        {
-            mensaje = "El libro es obligatorio";
-            return;
+        if (fechaPrestamo == default || fechaPrestamo.Date > DateTime.Today) { 
+            mensaje = "La fecha del préstamo no es válida."; 
+            return; 
         }
-        if (prestamo.FechaPrestamo > DateTime.Now)
-        {
-            mensaje = "La fecha de prestamo no puede ser mayor a la fecha actual";
-            return;
+        prestamo.FechaPrestamo = fechaPrestamo;
+        prestamo.FechaDevolucion = fechaDevolucion;
+        if (prestamo.Estado == "Devuelto" && prestamo.FechaDevolucion is null) {
+            prestamo.FechaDevolucion = DateTime.Today;
         }
-
-        if (prestamo.FechaDevolucion.HasValue &&
-            prestamo.FechaDevolucion.Value < prestamo.FechaPrestamo)
-        {
-            mensaje = "La fecha de devolucion no puede ser menor que la fecha de prestamo";
-
-            return;
-        }
-        if (string.IsNullOrWhiteSpace(prestamo.Estado))
-        {
-            mensaje = "Debe seleccionar un estado";
-            return;
-        }
-        bool resultado = await prestamosServices.Modificar(prestamo);
-        if (resultado)
-        {
-            Navigation.NavigateTo("/Prestamo/Index");
-        }
-        else
-        {
-            mensaje ="No se pudo modificar el prestamo";
-        }
+        if (prestamo.FechaDevolucion.HasValue && prestamo.FechaDevolucion.Value.Date < fechaPrestamo.Date) { mensaje = "La fecha de devolución no puede preceder al préstamo."; return; }
+        if (await prestamosServices.Modificar(prestamo, prestamo.Detalles)) Navigation.NavigateTo("/Prestamo/Index");
+        else mensaje = "No se pudo modificar: compruebe las existencias disponibles.";
     }
-    private void MostrarConfirmacion()
-    {
-        mostrarConfirmacion = true;
-    }
-    private void CancelarEliminar()
-    {
-        mostrarConfirmacion = false;
-    }
+
+    private void MostrarConfirmacion() => mostrarConfirmacion = true;
     private async Task ConfirmarEliminar()
     {
         mostrarConfirmacion = false;
-        bool resultado = await prestamosServices.Eliminar(PrestamoId);
-        if (resultado)
-        {
-            Navigation.NavigateTo("/Prestamo/Index");
-        }
-        else
-        {
-            mensaje = "No se pudo eliminar el prestamo";
-        }
+        if (await prestamosServices.Eliminar(PrestamoId)) Navigation.NavigateTo("/Prestamo/Index");
+        else mensaje = "No se pudo eliminar el préstamo.";
     }
-    private void Volver()
+    private void Nuevo()
     {
+        Navigation.NavigateTo("/Prestamo/Crear");
+    } 
+    private void Volver() {
         Navigation.NavigateTo("/Prestamo/Index");
     }
 }
