@@ -85,10 +85,10 @@
                     @(ListaEstudiantes.FirstOrDefault(estudiante => estudiante.EstudianteId == context.EstudianteId)?.Nombre ?? "No encontrado")
                 </TemplateColumn>
                 <TemplateColumn Title="Libro" Sortable="true">
-                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Titulo ?? "No encontrado")
+                    @NombresLibros(context)
                 </TemplateColumn>
                 <TemplateColumn Title="Cantidad">
-                    @(ListaLibros.FirstOrDefault(libro => libro.LibroId == context.LibroId)?.Cantidad ?? 0)
+                    @context.Detalles.Sum(detalle => detalle.Cantidad)
                 </TemplateColumn>
                 <PropertyColumn Property="prestamo => prestamo.FechaPrestamo" Title="Fecha préstamo" Sortable="true" />
                 <TemplateColumn Title="Fecha devolución">
@@ -140,7 +140,7 @@
                     }
                     <p>
                         <strong>Libro:</strong>
-                        @(ListaLibros.FirstOrDefault(libro => libro.LibroId == prestamoSeleccionado.LibroId)?.Titulo ?? "No encontrado")
+                        @NombresLibros(prestamoSeleccionado)
                     </p>
                     <p>
                         <strong>Estudiante:</strong>
@@ -148,7 +148,7 @@
                     </p>
                     <div class="mb-3">
                         <label class="form-label" for="fechaDevolucion"><strong>Fecha de devolución</strong></label>
-                        <InputDate id="fechaDevolucion" class="form-control" @bind-Value="fechaDevolucion" />
+                        <input id="fechaDevolucion" type="date" class="form-control" @bind="fechaDevolucion" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -220,7 +220,7 @@
                         .ToList();
 
                 ListaPrestamos = (await prestamosServices.ObtenerTodos())
-                    .Where(p => librosEncontrados.Contains(p.LibroId))
+                    .Where(p => p.Detalles.Any(d => librosEncontrados.Contains(d.LibroId)))
                     .ToList();
             }
             else
@@ -292,6 +292,16 @@
 
         prestamoSeleccionado.Estado = "Devuelto";
         prestamoSeleccionado.FechaDevolucion = fechaDevolucion;
+        foreach (var detalle in prestamoSeleccionado.Detalles)
+        {
+            var libro = ListaLibros.FirstOrDefault(l => l.LibroId == detalle.LibroId);
+            if (libro is not null) libro.Cantidad += detalle.Cantidad;
+        }
         CerrarModalDevolucion();
     }
+
+    private string NombresLibros(Prestamo prestamo) => prestamo.Detalles.Count == 0
+        ? ListaLibros.FirstOrDefault(libro => libro.LibroId == prestamo.LibroId)?.Titulo ?? "No encontrado"
+        : string.Join(", ", prestamo.Detalles.Select(detalle =>
+            ListaLibros.FirstOrDefault(libro => libro.LibroId == detalle.LibroId)?.Titulo ?? "No encontrado"));
 }

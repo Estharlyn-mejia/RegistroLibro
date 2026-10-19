@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Aplicada1.Core;
 using Microsoft.EntityFrameworkCore;
 using RegistroLibro.Context;
@@ -7,24 +7,29 @@ using RegistroLibro.Models;
 public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
     : IServiceResult<Prestamo, int>
 {
-    public async Task<bool> Guardar(Prestamo prestamo)
+    public Task<bool> Guardar(Prestamo prestamo) => Guardar(prestamo,
+        prestamo.LibroId > 0 ? [new PrestamoDetalle { LibroId = prestamo.LibroId, Cantidad = 1 }] : []);
+
+    public async Task<bool> Guardar(Prestamo prestamo, List<PrestamoDetalle> detalles)
     {
-        if (prestamo.EstudianteId <= 0 || prestamo.LibroId <= 0)
-        {
-            return false;
-        }
+        var solicitados = NormalizarDetalles(detalles);
+        if (prestamo.EstudianteId <= 0 || solicitados.Count == 0 || !EstadoValido(prestamo.Estado)) return false;
 
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        if (await contexto.Prestamos.AnyAsync(p =>
-                p.LibroId == prestamo.LibroId && p.Estado == "Prestado"))
-        {
-            return false;
-        }
+        await using var transaccion = await contexto.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        var libros = await contexto.Libros.Where(l => solicitados.Select(d => d.LibroId).Contains(l.LibroId)).ToDictionaryAsync(l => l.LibroId);
+        if (libros.Count != solicitados.Count || solicitados.Any(d => libros[d.LibroId].Cantidad < d.Cantidad)) return false;
 
+        if (prestamo.Estado == "Prestado")
+            foreach (var detalle in solicitados) libros[detalle.LibroId].Cantidad -= detalle.Cantidad;
+        prestamo.LibroId = solicitados[0].LibroId;
+        prestamo.Detalles = solicitados.Select(d => new PrestamoDetalle { LibroId = d.LibroId, Cantidad = d.Cantidad }).ToList();
         contexto.Prestamos.Add(prestamo);
         try
         {
-            return await contexto.SaveChangesAsync() > 0;
+            await contexto.SaveChangesAsync();
+            await transaccion.CommitAsync();
+            return true;
         }
         catch (DbUpdateException)
         {
@@ -32,109 +37,41 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
         }
     }
 
-    public async Task<bool> GuardarDetalles(Prestamo prestamo)
-    {
-        if(prestamo.EstudianteId <= 0 ||
-            prestamo.Detalles == null ||
-            prestamo.Detalles.Count == 0)
-        {
-            return false;
-        }
+    public Task<bool> GuardarDetalles(Prestamo prestamo) => Guardar(prestamo, prestamo.Detalles);
 
-        await using var contexto = await contextFactory.CreateDbContextAsync();
-        var librosSolicitados = prestamo.Detalles.GroupBy(d => d.LibroId).Select(g => new
-        {
-            LibroId = g.Key, 
-            Cantidad = g.Sum( d => d.cantidad)
-        }).ToList();
-        
-        foreach(var prestamos in librosSolicitados)
-        {
-            if(prestamos.LibroId <= 0 || prestamos.Cantidad <= 0)
-            {
-                return false;
-            }
-            var libro = await contexto.Libros.FirstOrDefaultAsync(l => l.LibroId == prestamos.LibroId);
-
-            if(libro == null || libro.Cantidad < prestamos.Cantidad)
-            {
-                return false;
-            }
-
-            bool estaPrestado = await contexto.detallePrestamos
-                .AnyAsync(d => d.LibroId == prestamos.LibroId &&
-                d.Prestamo != null &&
-                d.Prestamo.Estado == "Prestado");
-
-            if (estaPrestado)
-            {
-                return false;
-            }
-        }
-
-        prestamo.LibroId = librosSolicitados[0].LibroId;
-        prestamo.Detalles = librosSolicitados.Select(prestamos => new DetallePrestamo
-        {
-            LibroId = prestamos.LibroId,
-            cantidad = prestamos.Cantidad
-        }).ToList();
-
-        contexto.Prestamos.Add(prestamo);
-        try
-        {
-            return await contexto.SaveChangesAsync() > 0;
-        }
-        catch (DbUpdateException)
-        {
-            return false;
-        }
-    }
-
-    async Task<Result> IServiceResult<Prestamo, int>.Guardar(Prestamo entidad)
-    {
-        return await Guardar(entidad)
-            ? Result.Success()
-            : Result.Failure(new Error("SAVE_FAILED", "No se pudo guardar el préstamo; verifique que el libro no esté prestado."));
-    }
+    async Task<Result> IServiceResult<Prestamo, int>.Guardar(Prestamo entidad) =>
+        await Guardar(entidad) ? Result.Success() : Result.Failure(new Error("SAVE_FAILED", "No se pudo guardar el préstamo; revise las cantidades disponibles."));
 
     public async Task<bool> EstaPrestado(int libroId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos.AnyAsync(p =>
-            p.LibroId == libroId && p.Estado == "Prestado");
+        return await contexto.PrestamoDetalles.AnyAsync(d => d.LibroId == libroId && d.Prestamo != null && d.Prestamo.Estado == "Prestado");
     }
 
     public async Task<Result> RegistrarDevolucion(int prestamoId, int estudianteId, DateTime fechaDevolucion)
     {
-        if (prestamoId <= 0 || estudianteId <= 0)
-        {
-            return Result.Failure(new Error("VALIDATION", "El préstamo y el estudiante son obligatorios."));
-        }
-        if (fechaDevolucion == default || fechaDevolucion.Date > DateTime.Today)
-        {
-            return Result.Failure(new Error("INVALID_RETURN_DATE", "La fecha de devolución no es válida."));
-        }
+        if (prestamoId <= 0 || estudianteId <= 0 || fechaDevolucion == default || fechaDevolucion.Date > DateTime.Today)
+            return Result.Failure(new Error("VALIDATION", "El préstamo, el estudiante y una fecha válida son obligatorios."));
 
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        var prestamo = await contexto.Prestamos.FirstOrDefaultAsync(p =>
-            p.PrestamoId == prestamoId &&
-            p.EstudianteId == estudianteId &&
-            p.Estado == "Prestado");
-
-        if (prestamo == null)
-        {
-            return Result.Failure(new Error("LOAN_NOT_FOUND", "No existe un préstamo activo para ese estudiante."));
-        }
+        await using var transaccion = await contexto.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        var prestamo = await contexto.Prestamos.Include(p => p.Detalles)
+            .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId && p.EstudianteId == estudianteId && p.Estado == "Prestado");
+        if (prestamo is null) return Result.Failure(new Error("LOAN_NOT_FOUND", "No existe un préstamo activo para ese estudiante."));
         if (fechaDevolucion.Date < prestamo.FechaPrestamo.Date)
-        {
-            return Result.Failure(new Error("INVALID_RETURN_DATE", "La fecha de devolución no puede ser anterior a la fecha del préstamo."));
-        }
+            return Result.Failure(new Error("INVALID_RETURN_DATE", "La fecha de devolución no puede ser anterior a la del préstamo."));
 
+        var detalles = DetallesDelPrestamo(prestamo);
+        var libros = await contexto.Libros.Where(l => detalles.Select(d => d.LibroId).Contains(l.LibroId)).ToDictionaryAsync(l => l.LibroId);
+        if (libros.Count != detalles.Select(d => d.LibroId).Distinct().Count())
+            return Result.Failure(new Error("BOOK_NOT_FOUND", "No se encontraron todos los libros del préstamo."));
+        foreach (var detalle in detalles) libros[detalle.LibroId].Cantidad += detalle.Cantidad;
         prestamo.Estado = "Devuelto";
         prestamo.FechaDevolucion = fechaDevolucion;
         try
         {
             await contexto.SaveChangesAsync();
+            await transaccion.CommitAsync();
             return Result.Success();
         }
         catch (DbUpdateException)
@@ -146,34 +83,57 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
     public async Task<Prestamo?> Buscar(int prestamoId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos
-            .AsNoTracking()
+        return await contexto.Prestamos.Include(p => p.Detalles).AsNoTracking()
             .FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
     }
 
     async Task<Result<Prestamo?>> IServiceResult<Prestamo, int>.Buscar(int id)
     {
         var prestamo = await Buscar(id);
-        return prestamo is null
-            ? Result.Failure<Prestamo?>(new Error("LOAN_NOT_FOUND", "El préstamo no existe."))
-            : Result.Success<Prestamo?>(prestamo);
+        return prestamo is null ? Result.Failure<Prestamo?>(new Error("LOAN_NOT_FOUND", "El préstamo no existe.")) : Result.Success<Prestamo?>(prestamo);
     }
 
-    public async Task<bool> Modificar(Prestamo prestamo)
+    public Task<bool> Modificar(Prestamo prestamo) => Modificar(prestamo,
+        prestamo.Detalles.Count > 0 ? prestamo.Detalles :
+        prestamo.LibroId > 0 ? [new PrestamoDetalle { LibroId = prestamo.LibroId, Cantidad = 1 }] : []);
+
+    public async Task<bool> Modificar(Prestamo prestamo, List<PrestamoDetalle> nuevosDetalles)
     {
+        var solicitados = NormalizarDetalles(nuevosDetalles);
+        if (prestamo.PrestamoId <= 0 || prestamo.EstudianteId <= 0 || solicitados.Count == 0 || !EstadoValido(prestamo.Estado)) return false;
+
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        if (prestamo.Estado == "Prestado" && await contexto.Prestamos.AnyAsync(p =>
-                p.LibroId == prestamo.LibroId &&
-                p.Estado == "Prestado" &&
-                p.PrestamoId != prestamo.PrestamoId))
+        await using var transaccion = await contexto.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        var existente = await contexto.Prestamos.Include(p => p.Detalles).FirstOrDefaultAsync(p => p.PrestamoId == prestamo.PrestamoId);
+        if (existente is null) return false;
+
+        var anteriores = DetallesDelPrestamo(existente);
+        var ids = anteriores.Concat(solicitados).Select(d => d.LibroId).Distinct().ToList();
+        var libros = await contexto.Libros.Where(l => ids.Contains(l.LibroId)).ToDictionaryAsync(l => l.LibroId);
+        if (libros.Count != ids.Count) return false;
+
+        if (existente.Estado == "Prestado")
+            foreach (var detalle in anteriores) libros[detalle.LibroId].Cantidad += detalle.Cantidad;
+
+        if (prestamo.Estado == "Prestado")
         {
-            return false;
+            foreach (var detalle in solicitados)
+                if (libros[detalle.LibroId].Cantidad < detalle.Cantidad) return false;
+            foreach (var detalle in solicitados) libros[detalle.LibroId].Cantidad -= detalle.Cantidad;
         }
 
-        contexto.Prestamos.Update(prestamo);
+        existente.EstudianteId = prestamo.EstudianteId;
+        existente.LibroId = solicitados[0].LibroId;
+        existente.FechaPrestamo = prestamo.FechaPrestamo;
+        existente.FechaDevolucion = prestamo.FechaDevolucion;
+        existente.Estado = prestamo.Estado;
+        contexto.PrestamoDetalles.RemoveRange(existente.Detalles);
+        existente.Detalles = solicitados.Select(d => new PrestamoDetalle { LibroId = d.LibroId, Cantidad = d.Cantidad }).ToList();
         try
         {
-            return await contexto.SaveChangesAsync() > 0;
+            await contexto.SaveChangesAsync();
+            await transaccion.CommitAsync();
+            return true;
         }
         catch (DbUpdateException)
         {
@@ -184,46 +144,60 @@ public class PrestamosServices(IDbContextFactory<Contexto> contextFactory)
     public async Task<bool> Eliminar(int prestamoId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos.AsNoTracking()
-            .Where(p => p.PrestamoId == prestamoId)
-            .ExecuteDeleteAsync() > 0;
+        await using var transaccion = await contexto.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        var prestamo = await contexto.Prestamos.Include(p => p.Detalles).FirstOrDefaultAsync(p => p.PrestamoId == prestamoId);
+        if (prestamo is null) return false;
+        if (prestamo.Estado == "Prestado")
+        {
+            var detalles = DetallesDelPrestamo(prestamo);
+            var libros = await contexto.Libros.Where(l => detalles.Select(d => d.LibroId).Contains(l.LibroId)).ToDictionaryAsync(l => l.LibroId);
+            if (libros.Count != detalles.Select(d => d.LibroId).Distinct().Count()) return false;
+            foreach (var detalle in detalles) libros[detalle.LibroId].Cantidad += detalle.Cantidad;
+        }
+        contexto.Prestamos.Remove(prestamo);
+        try
+        {
+            await contexto.SaveChangesAsync();
+            await transaccion.CommitAsync();
+            return true;
+        }
+        catch (DbUpdateException)
+        {
+            return false;
+        }
     }
 
-    async Task<Result> IServiceResult<Prestamo, int>.Eliminar(int id)
-    {
-        return await Eliminar(id)
-            ? Result.Success()
-            : Result.Failure(new Error("LOAN_NOT_FOUND", "El préstamo no existe."));
-    }
+    async Task<Result> IServiceResult<Prestamo, int>.Eliminar(int id) =>
+        await Eliminar(id) ? Result.Success() : Result.Failure(new Error("LOAN_NOT_FOUND", "El préstamo no existe."));
 
     public async Task<List<Prestamo>> GetList(Expression<Func<Prestamo, bool>> criterio)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos
-            .Where(criterio)
-            .AsNoTracking()
-            .ToListAsync();
+        return await contexto.Prestamos.Include(p => p.Detalles).Where(criterio).AsNoTracking().ToListAsync();
     }
 
-    async Task<Result<List<Prestamo>>> IServiceResult<Prestamo, int>.GetList(
-        Expression<Func<Prestamo, bool>> criterio)
-    {
-        return Result.Success(await GetList(criterio));
-    }
+    async Task<Result<List<Prestamo>>> IServiceResult<Prestamo, int>.GetList(Expression<Func<Prestamo, bool>> criterio) => Result.Success(await GetList(criterio));
 
     public async Task<List<Prestamo>> GetPrestamosPendientes(int estudianteId)
     {
         await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos
-            .Where(p => p.EstudianteId == estudianteId && p.Estado == "Prestado")
-            .OrderBy(p => p.PrestamoId)
-            .AsNoTracking()
-            .ToListAsync();
+        return await contexto.Prestamos.Include(p => p.Detalles).Where(p => p.EstudianteId == estudianteId && p.Estado == "Prestado").OrderBy(p => p.PrestamoId).AsNoTracking().ToListAsync();
     }
 
-    public async Task<List<Prestamo>> ObtenerTodos()
+    public async Task<List<Prestamo>> ObtenerTodos() => await GetList(p => p.PrestamoId > 0);
+
+    private static bool EstadoValido(string estado) => estado is "Prestado" or "Devuelto";
+
+    private static List<PrestamoDetalle> NormalizarDetalles(IEnumerable<PrestamoDetalle> detalles)
     {
-        await using var contexto = await contextFactory.CreateDbContextAsync();
-        return await contexto.Prestamos.AsNoTracking().ToListAsync();
+        var lineas = detalles.ToList();
+        if (lineas.Count == 0 || lineas.Any(d => d.LibroId <= 0 || d.Cantidad <= 0)) return [];
+        return lineas.GroupBy(d => d.LibroId)
+            .Select(g => new PrestamoDetalle { LibroId = g.Key, Cantidad = g.Sum(d => d.Cantidad) })
+            .ToList();
     }
+
+    private static List<PrestamoDetalle> DetallesDelPrestamo(Prestamo prestamo) => prestamo.Detalles.Count > 0
+        ? NormalizarDetalles(prestamo.Detalles)
+        : prestamo.LibroId > 0 ? [new PrestamoDetalle { LibroId = prestamo.LibroId, Cantidad = 1 }] : [];
 }

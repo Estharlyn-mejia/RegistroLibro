@@ -12,6 +12,6 @@ public class Libros
     public string Autor { get; set; } = string.Empty;
     [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
     public int AnoPublicacion { get; set; }
-    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
+    [Range(0, int.MaxValue, ErrorMessage = "La cantidad disponible no puede ser negativa")]
     public int Cantidad { get; set; }
 }

@@ -1,0 +1,215 @@
+﻿@page "/Entradas/Crear"
+@page "/Entradas/Editar/{EntradaId:int}"
+@inject EntradasServices entradasServices
+@inject GestionLibro gestionLibro
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>@(EntradaId.HasValue ? "Editar entrada" : "Nueva entrada")</PageTitle>
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h4 class="mb-0">
+                @(EntradaId.HasValue ? "Editar entrada" : "Nueva entrada de inventario")
+            </h4>
+        </div>
+        <div class="card-body">
+            @if (!string.IsNullOrWhiteSpace(mensaje)) { 
+                <div class="alert alert-danger">
+                    @mensaje
+                </div> 
+            }
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">
+                        Fecha
+                    </label>
+                    <input class="form-control" 
+                            type="date" 
+                            @bind="fecha" />
+                </div>
+                <div class="col-md-8">
+                    <label class="form-label">
+                        Concepto
+                    </label>
+                    <input class="form-control" 
+                            @bind="entrada.Concepto" 
+                            placeholder="Ej.: compra de libros" />
+                </div>
+            </div>
+            <section class="border rounded mt-4">
+                <h5 class="bg-light border-bottom p-3 mb-0">
+                    Libros recibidos
+                </h5>
+                <div class="p-3">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label class="form-label">
+                                Libro
+                            </label>
+                            <select class="form-select" 
+                                    @bind="libroSeleccionadoId">
+                                    <option value="0">
+                                        Seleccione un libro
+                                    </option>
+                                    @foreach (var libro in libros) { 
+                                        <option value="@libro.LibroId">
+                                            @libro.Titulo
+                                        </option> 
+                                    }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">
+                                Cantidad
+                            </label>
+                            <input class="form-control" 
+                                    type="number" 
+                                    min="1" 
+                                    @bind="cantidadSeleccionada" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary w-100" 
+                                    @onclick="Agregar">
+                                    Agregar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-striped align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Libro</th>
+                                    <th style="width: 180px">Cantidad recibida</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in entrada.Detalles)
+                                {
+                                    <tr>
+                                        <td>@(libros.FirstOrDefault(l => l.LibroId == detalle.LibroId)?.Titulo ?? "Libro no encontrado")</td>
+                                        <td><input class="form-control" 
+                                                    type="number" 
+                                                    min="1" 
+                                                    @bind="detalle.Cantidad" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-outline-danger" 
+                                                    @onclick="() => entrada.Detalles.Remove(detalle)">
+                                                Quitar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                                @if (entrada.Detalles.Count == 0) { 
+                                    <tr>
+                                        <td colspan="3" 
+                                            class="text-center text-muted">
+                                            Agregue los libros que llegaron.
+                                        </td>
+                                    </tr> }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2" 
+                                        class="text-end">
+                                            Total de unidades
+                                    </th>
+                                    <th>@entrada.Detalles.Sum(d => d.Cantidad)</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <small class="text-muted">
+                        El total se calcula como la suma de unidades. Para calcular un total monetario, el detalle necesitaría precio por unidad.
+                    </small>
+                </div>
+            </section>
+        </div>
+        <div class="card-footer bg-light d-flex justify-content-center gap-2">
+            <a class="btn btn-outline-secondary" 
+                href="/Entradas/Index">
+                Volver
+            </a>
+            <button class="btn btn-success" 
+                    @onclick="Guardar">
+                Guardar
+            </button>
+            @if (EntradaId.HasValue) { 
+                <button class="btn btn-outline-danger" 
+                        @onclick="Eliminar">
+                    Eliminar
+                </button> 
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int? EntradaId { get; set; }
+    private Entrada entrada = new() { Fecha = DateTime.Today };
+    private List<Libros> libros = [];
+    private int libroSeleccionadoId;
+    private int cantidadSeleccionada = 1;
+    private DateTime fecha = DateTime.Today;
+    private string mensaje = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        libros = await gestionLibro.ObtenerTodos();
+        if (EntradaId is int id)
+        {
+            var existente = await entradasServices.Buscar(id);
+            if (existente is null) { mensaje = "No se encontró la entrada."; return; }
+            entrada = existente;
+            fecha = entrada.Fecha;
+        }
+    }
+
+    private void Agregar()
+    {
+        mensaje = string.Empty;
+        if (libroSeleccionadoId <= 0 || cantidadSeleccionada <= 0) { 
+            mensaje = "Seleccione un libro y una cantidad válida."; 
+            return; 
+        }
+        var existente = entrada.Detalles.FirstOrDefault(d => d.LibroId == libroSeleccionadoId);
+        if (existente is null) entrada.Detalles.Add(new EntradaDetalle { 
+            LibroId = libroSeleccionadoId, Cantidad = cantidadSeleccionada 
+            });
+        else existente.Cantidad += cantidadSeleccionada;
+        libroSeleccionadoId = 0;
+        cantidadSeleccionada = 1;
+    }
+
+    private async Task Guardar()
+    {
+        mensaje = string.Empty;
+        if (string.IsNullOrWhiteSpace(entrada.Concepto) || fecha == default || entrada.Detalles.Count == 0 || entrada.Detalles.Any(d => d.Cantidad <= 0))
+        { 
+            mensaje = "Indique el concepto, la fecha y al menos un libro con cantidad válida."; 
+            return; 
+        }
+        entrada.Fecha = fecha;
+        var guardado = EntradaId.HasValue ? await entradasServices.Modificar(entrada) : await entradasServices.Guardar(entrada);
+        if (guardado) {
+            Navigation.NavigateTo("/Entradas/Index");
+        }
+        else {
+        mensaje = "No se pudo guardar. Al modificar o eliminar, las unidades previamente recibidas deben seguir disponibles.";
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        if (EntradaId is int id && await entradasServices.Eliminar(id)) 
+        {
+            Navigation.NavigateTo("/Entradas/Index");
+        }
+        else 
+        {
+            mensaje = "No se puede eliminar la entrada porque faltan unidades de su inventario o hubo un error.";
+        }
+    }
+}
