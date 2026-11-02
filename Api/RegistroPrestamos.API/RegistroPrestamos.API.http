@@ -1,0 +1,72 @@
+@RegistroPrestamos.API_HostAddress = https://localhost:7267
+
+GET {{RegistroPrestamos.API_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{RegistroPrestamos.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+GET {{RegistroPrestamos.API_HostAddress}}/api/estudiantescrontroller
+
+###
+
+POST {{RegistroPrestamos.API_HostAddress}}/api/estudiantescrontroller
+Content-Type: application/json
+
+{
+  //Estudiante
+}
+
+###
+
+@id=0
+DELETE {{RegistroPrestamos.API_HostAddress}}/api/estudiantescrontroller/{{id}}
+
+###
+
+GET {{RegistroPrestamos.API_HostAddress}}/api/estudiantescrontroller/{{id}}
+
+###
+
+PUT {{RegistroPrestamos.API_HostAddress}}/api/estudiantescrontroller/{{id}}
+Content-Type: application/json
+
+{
+  //Estudiante
+}
+
+###
+
+GET {{RegistroPrestamos.API_HostAddress}}/api/libros
+
+###
+
+POST {{RegistroPrestamos.API_HostAddress}}/api/libros
+Content-Type: application/json
+
+{
+  //Libro
+}
+
+###
+
+DELETE {{RegistroPrestamos.API_HostAddress}}/api/libros/{{id}}
+
+###
+
+GET {{RegistroPrestamos.API_HostAddress}}/api/libros/{{id}}
+
+###
+
+PUT {{RegistroPrestamos.API_HostAddress}}/api/libros/{{id}}
+Content-Type: application/json
+
+{
+  //Libro
+}
+
+###
