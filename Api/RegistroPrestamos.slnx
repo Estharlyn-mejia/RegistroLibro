@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RegistroPrestamos.API/RegistroPrestamos.API.csproj" />
+  <Project Path="RegistroPrestamos.Data/RegistroPrestamos.Data.csproj" />
+  <Project Path="RegistroPrestamos.Services/RegistroPrestamos.Services.csproj" />
+</Solution>
