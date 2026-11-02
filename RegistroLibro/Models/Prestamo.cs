@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RegistroLibro.Models;
 
-public partial class Prestamo
+public class Prestamo
 {
     [Key]
     public int PrestamoId { get; set; }
@@ -12,19 +12,21 @@ public partial class Prestamo
     public int EstudianteId { get; set; }
 
     [ForeignKey(nameof(EstudianteId))]
-    public virtual Estudiantes? Estudiante { get; set; }
+    public Estudiantes? Estudiante { get; set; }
 
-    [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un libro válido")]
+    // Se conserva por compatibilidad con préstamos existentes; corresponde al primer detalle.
     public int LibroId { get; set; }
 
     [ForeignKey(nameof(LibroId))]
-    public virtual Libros? Libro { get; set; }
+    public Libros? Libro { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio")]
+    [Required]
     public DateTime FechaPrestamo { get; set; }
 
     public DateTime? FechaDevolucion { get; set; }
 
-    [Required(ErrorMessage = "Este campo es obligatorio")]
-    public string Estado { get; set; } = string.Empty;
+    [Required]
+    public string Estado { get; set; } = "Prestado";
+
+    public List<PrestamoDetalle> Detalles { get; set; } = [];
 }

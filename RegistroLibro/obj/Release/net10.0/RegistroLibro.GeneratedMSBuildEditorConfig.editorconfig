@@ -83,6 +83,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xJbmRleC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Pages/PrestamosPages/PrestamosDevueltos.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xQcmVzdGFtb3NQYWdlc1xQcmVzdGFtb3NEZXZ1ZWx0b3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Aplicada 1/RegistroLibro/RegistroLibro/RegistroLibro/Components/Routes.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 

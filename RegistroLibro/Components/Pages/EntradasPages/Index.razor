@@ -1,0 +1,87 @@
+﻿
+@page "/Entradas/Index"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject EntradasServices entradasServices
+@inject GestionLibro gestionLibro
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Entradas de inventario</PageTitle>
+
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center bg-light">
+            <h4 class="mb-0">Entradas de inventario</h4>
+            <a class="btn btn-primary" href="/Entradas/Crear">
+                <i class="bi bi-plus-lg"></i> Nueva entrada
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (mensaje.Length > 0)
+            {
+                <div class="alert alert-danger">@mensaje</div>
+            }
+
+            <div class="table-responsive">
+                <QuickGrid Items="@entradas.AsQueryable()"
+                            Class="table table-bordered table-striped table-hover align-middle">
+
+                    <PropertyColumn Property="@(e => e.EntradaId)"
+                                    Title="Entrada" />
+
+                    <PropertyColumn Property="@(e => e.Fecha)"
+                                    Title="Fecha"
+                                    Format="dd/MM/yyyy" />
+
+                    <PropertyColumn Property="@(e => e.Concepto)"
+                                    Title="Concepto" />
+
+                    <TemplateColumn Title="Libros recibidos">
+                        @string.Join(", ",
+                            context.Detalles.Select(d =>
+                                libros.FirstOrDefault(l => l.LibroId == d.LibroId)?.Titulo
+                                ?? "Libro eliminado"))
+                    </TemplateColumn>
+
+                    <PropertyColumn Property="@(e => e.Total)"
+                                    Title="Total unidades" />
+
+                    <TemplateColumn Title="Acciones">
+                        <a class="btn btn-outline-warning btn-sm"
+                           href="@($"/Entradas/Editar/{context.EntradaId}")">
+                            Editar
+                        </a>
+                    </TemplateColumn>
+
+                </QuickGrid>
+            </div>
+
+            @if (entradas.Count == 0)
+            {
+                <p class="text-center text-muted mt-3">
+                    No hay entradas registradas.
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Entrada> entradas = [];
+    private List<Libros> libros = [];
+    private string mensaje = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            entradas = await entradasServices.ObtenerTodos();
+            libros = await gestionLibro.ObtenerTodos();
+        }
+        catch (Exception ex)
+        {
+            mensaje = $"Error al cargar las entradas: {ex.Message}";
+        }
+    }
+}

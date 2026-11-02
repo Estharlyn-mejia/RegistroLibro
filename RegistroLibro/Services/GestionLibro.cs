@@ -34,6 +34,14 @@ public class GestionLibro(IDbContextFactory<Contexto> DbFactory)
     public async Task<bool> Eliminar(int libroId)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
+        bool tienePrestamos = await contexto.Prestamos.AnyAsync(p => p.LibroId == libroId) ||
+            await contexto.PrestamoDetalles.AnyAsync(d => d.LibroId == libroId);
+        bool tieneEntradas = await contexto.EntradasDetalle.AnyAsync(d => d.LibroId == libroId);
+        if (tienePrestamos || tieneEntradas)
+        {
+            return false;
+        }
+
         return await contexto.Libros.AsNoTracking()
             .Where(p => p.LibroId == libroId).ExecuteDeleteAsync() > 0;
     }
